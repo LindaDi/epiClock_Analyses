@@ -1,0 +1,11 @@
+# gitignore file
+
+# Ignore Mac system files
+.DS_store
+
+# Ignore the Script (output may contain sensitive info)
+Analyses.Rmd
+
+# Ignore the Data
+InputData/
+Results/
