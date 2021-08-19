@@ -1,148 +1,177 @@
----
-title: "characteristics of epigenetic aging across gestational/perinatal tissues"
-author: "Linda Dieckmann"
-date: "March 2021"
-output:
-   html_document:
-    keep_md: yes
-    toc: yes
-    toc_float: yes
-    collapsed: no
-    theme: flatly
----
+characteristics of epigenetic aging across gestational/perinatal tissues
+================
+Linda Dieckmann
+March 2021
 
-<style type="text/css">
-.main-container {
-  max-width: 2000px;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>
+-----
 
+##### **Jump to sections**
 
-
-***
-##### **Jump to sections** {#top}  
-***
+-----
 
 **General**  
 [start with loading packages & functions](#loadpacks)  
-[loading data & Sample Overview](#loadData)  
+[loading data & Sample Overview](#loadData)
 
 Prepare data for elastic net models:  
 [CVS: data preparation for models](#dataprepCVSITU)  
 [Cord blood: data preparation](#dataprepCordITU)  
 [Placenta: data preparation](#dataprepPlacentaITU)  
-[Cord blood EPIC: data preparation](#dataprepCordPREDO)   
+[Cord blood EPIC: data preparation](#dataprepCordPREDO)  
 [Cord blood 450K: data preparation](#dataprepCord450KPREDO)  
-[Placenta: data preparation](#dataprepPlacentaPREDO)  
+[Placenta: data preparation](#dataprepPlacentaPREDO)
 
-[SampleVisualization](#Samples)  
+[SampleVisualization](#Samples)
 
 **Basics & Descriptive Statistics:**  
 [ITU](#ITUDescriptive)  
-[PREDO](#PREDODescriptive)  
+[PREDO](#PREDODescriptive)
 
-[comparison PREDO & ITU in predictors](#predictorsITUPREDO)  
+[comparison PREDO & ITU in predictors](#predictorsITUPREDO)
 
-[ITU: look at predictors (& correlations), in full data (all persons)](#PredictorsITUAll)  
-[PREDO: look at predictors (& correlations), in full data (all persons)](#PredictorsPREDOAll)  
+[ITU: look at predictors (& correlations), in full data (all
+persons)](#PredictorsITUAll)  
+[PREDO: look at predictors (& correlations), in full data (all
+persons)](#PredictorsPREDOAll)
 
 [ITU: correlation DNAmGA & GA for clocks](#corDNAmGAGAITU)  
 [PREDO: correlation DNAmGA & GA for clocks](#corDNAmGAGAPREDO)  
-[Plots correlation DNAmGA & GA](#PlotcorDNAmGAGA)  
+[Plots correlation DNAmGA & GA](#PlotcorDNAmGAGA)
 
 [Clocks: correlation cord blood clocks](#corCordClocks)  
-[Clocks: correlation placenta clocks](#corPlacentaClocks)  
+[Clocks: correlation placenta clocks](#corPlacentaClocks)
 
 [ITU: Visualization EAAR](#plotsEAARITU)  
-[PREDO: Visualization EAAR](#plotsEAARPREDO)  
+[PREDO: Visualization EAAR](#plotsEAARPREDO)
 
 **Single Tissues Analyses**  
 *ITU*  
 [Cord blood: elastic net main](#elasticnetCVSITU)  
-[Cord blood: elastic net including maternal alcohol use](#elasticnetCordITU_a)  
+[Cord blood: elastic net including maternal alcohol
+use](#elasticnetCordITU_a)  
 [CVS: elastic net main](#elasticnetCVSITU)  
 [CVS: elastic net including maternal alcohol use](#elasticnetCVSITU_a)  
 [Placenta: elastic net main](#elasticnetPlacentaITU)  
-[Placenta: elastic net including maternal alcohol use](#elasticnetPlacentaITU_a)  
+[Placenta: elastic net including maternal alcohol
+use](#elasticnetPlacentaITU_a)  
 [Placenta: elastic net splitted by sex](#elasticnetPlacentaITU_s)  
 *PREDO*  
 [Placenta: elastic net main](#elasticnetPlacentaPREDO)  
-[Placenta: elastic net including maternal alcohol use](#elasticnetPlacentaPREDO_a)  
+[Placenta: elastic net including maternal alcohol
+use](#elasticnetPlacentaPREDO_a)  
 [Placenta: elastic net splitted by sex](#elasticnetPlacentaPREDO_s)  
 [Cord blood: prediction](#predictionCordPREDO)  
 [Cord blood: elastic net main](#elasticnetCordPREDO)  
-[Cord blood: elastic net main](#elasticnetCordPREDO450)  
+[Cord blood: elastic net main](#elasticnetCordPREDO450)
 
 **Cross-Tissue Analyses**  
 [DNAmGA between tissues](#corTissuesDNAmGA)  
 [EAAR between tissues](#corTissuesEAAR)  
-[Difference in EAAR between Tissues](#DifferenceEAARTissues)  
+[Difference in EAAR between Tissues](#DifferenceEAARTissues)
 
+-----
 
-***
-
-# load packages {#loadpacks}  
-
+# load packages
 
 <!-- ```{r} -->
+
 <!-- # critical to do this whenever using new R/computer (otherwise problems with replicate, bootstrapping): -->
 
 <!-- if ( !("ensr" %in% rownames(installed.packages())) || (packageVersion("ensr") < "0.1.0.9001" ) ) { -->
+
 <!--   remotes::install_github('dewittpe/ensr') -->
+
 <!-- } -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- install.packages("psych") -->
+
 <!-- install.packages("corrplot") -->
+
 <!-- install.packages("Rmisc") -->
+
 <!-- install.packages("pastecs") -->
+
 <!-- install.packages("reshape2") -->
+
 <!-- install.packages("ggpubr") -->
+
 <!-- install.packages("ggplot2") -->
+
 <!-- install.packages("Hmisc") -->
+
 <!-- install.packages("cowplot") -->
+
 <!-- install.packages("tibble") -->
+
 <!-- install.packages("dplyr") -->
+
 <!-- install.packages("gridExtra") -->
+
 <!-- install.packages("car") -->
+
 <!-- install.packages("tidyverse") -->
+
 <!-- #install.packages("caret") -->
+
 <!-- install.packages("leaps") -->
+
 <!-- #install.packages("AppliedPredictiveModeling") -->
+
 <!-- install.packages("pairsD3") -->
+
 <!-- install.packages("rgl") -->
+
 <!-- install.packages("plot3D") -->
+
 <!-- install.packages("plot3Drgl") -->
+
 <!-- install.packages("glmnet") -->
+
 <!-- install.packages("MASS") -->
+
 <!-- install.packages("sjPlot") -->
+
 <!-- install.packages("sjlabelled") -->
+
 <!-- install.packages("skimr") -->
+
 <!-- install.packages("ggforce") -->
+
 <!-- install.packages("doMC", repos="http://R-Forge.R-project.org") -->
+
 <!-- install.packages("qwraps2") -->
+
 <!-- install.packages("knitr") -->
+
 <!-- install.packages("magrittr") -->
+
 <!-- install.packages("remotes") -->
+
 <!-- install.packages("qwraps2") -->
+
 <!-- install.packages("rmarkdown") -->
+
 <!-- install.packages("data.table") -->
+
 <!-- install.packages("qgraph") -->
+
 <!-- install.packages("miscTools") -->
+
 <!-- install.packages("akmedoids") -->
+
 <!-- install.packages("stargazer") -->
+
 <!-- install.packages("ppcor") -->
+
 <!-- install.packages("IsingSampler") -->
+
 <!-- ``` -->
 
-
-
-
-
-```r
+``` r
 # outlier function for descriptive graphs
 is_outlier <- function(x) {
   return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))}
@@ -173,23 +202,22 @@ elbow_finder <- function(x_values, y_values) {
 }
 ```
 
-
-
-```r
+``` r
 options(scipen=999)
 ```
 
-
-```r
+``` r
 writeLines(capture.output(sessionInfo()), "sessionInfo.txt")
 ```
 
-# Load saved data to start from here {#loadData}  
-Note that the working directory is the directory where the Script is located
+# Load saved data to start from here
+
+Note that the working directory is the directory where the Script is
+located
 
 Here I provide the prepared Data:
 
-```r
+``` r
 load(file= "InputData/ClockCalculationsInput/Data_CVS_ITU.Rdata")
 load(file= "InputData/ClockCalculationsInput/Data_Cord_ITU.Rdata")
 load(file= "InputData/ClockCalculationsInput/Data_Placenta_ITU.Rdata")
@@ -212,58 +240,97 @@ load(file="InputData/ClockCalculationsInput/Data_PREDO_Placenta_male.Rdata")
 load(file="InputData/ClockCalculationsInput/Data_PREDO_Placenta_female.Rdata")
 ```
 
-
-
 <div class="alert alert-info">
-  <strong>This is how I calculated measures of age acceleration/deceleration:</strong>  
-  
-* **EAAR <- as.numeric(residuals(lm(DNAmGA_Lee ~ Gestational_Age_Weeks + Trophoblasts + Stromal + Hofbauer + Endothelial + nRBC + Syncytiotrophoblast + PC1_ethnicity + PC2_ethnicity, data=X, na.action=na.exclude)))**  
-= a positive value means acceleration, a negative value deceleration 
+
+<strong>This is how I calculated measures of age
+acceleration/deceleration:</strong>
+
+  - **EAAR \<- as.numeric(residuals(lm(DNAmGA\_Lee \~
+    Gestational\_Age\_Weeks + Trophoblasts + Stromal + Hofbauer +
+    Endothelial + nRBC + Syncytiotrophoblast + PC1\_ethnicity +
+    PC2\_ethnicity, data=X, na.action=na.exclude)))**  
+    \= a positive value means acceleration, a negative value
+    deceleration
+
 </div>
 
-
-**Sample overview**
-![ ](Sample_Overview/sample_ITU.PNG)
-![ ](Sample_Overview/sample_ITU_2.PNG)
-![ ](Sample_Overview/sample_PREDO.PNG)
-![ ](Sample_Overview/sample_PREDO_2.PNG)
+**Sample overview** ![](Sample_Overview/sample_ITU.PNG)
+![](Sample_Overview/sample_ITU_2.PNG)
+![](Sample_Overview/sample_PREDO.PNG)
+![](Sample_Overview/sample_PREDO_2.PNG)
 
 [to the top](#top)
 
 **General Comments**
 
-<strong>note on the influence of missing CpGs:</strong>  
-  
-* for the clock of placenta (Lee): not all CpGs included in the clock would have been included *after* our QC, however they were used here because they are needed for the clock (discussed with Steve Horvath).    
-* for the clock of placenta (Mayne): not all CpGs of the clock are available, because the clock was again trained on 450K/27K data. Although the authors here did not report the comparability between the reduced and full clock, we excluded the 5 missing CpGs (that are in the clock, but not in our data) and predicted age.  
-* for the clock of Bohlin et al. (cordblood), 8 CpGs are missing in the EPIC data (clock designed on Illumina 450K/27K/CHARM data). Again, the authors did not report a correlation between a reduced and full clock.  
-* for the clock of Knight et al. (cordblood), 6 CpGs are missing in the EPIC data, because the clock was designed on Illumina 450K/27K data. Here, Knight et al. claimed that the clock would work anyways (tested correlation between estimates from reduced predictor and full predictor).
-  
-* the correlation between the estimated DNAmGA of the full and reduced **Bohlin clock** is r= .99 p < 2.2e-16 (tested with PREDO 450K)    
-* the mean of the weights of the missing CpGS of the Bohlin clock is -2.159  
-* the *reported* correlation between the estimated DNAmGA of the full and reduced **Knight clock** is r=.995  
-* in our data the correlation is r=.97 p < 2.2e-16  
-* the estimation from the reduced clock is again on average higher than the estimation from the full clock  
-* the mean of the weights of the missing CpGS of the Bohlin clock is -0.767  
--> overall, both the reduced and full clock come to quite similar results, but the mean DNAm GA estimate differs (account for by using residuals)  
+<strong>note on the influence of missing CpGs:</strong>
 
-McEwen et al. (2018) tested if the 19 CpGs from the Horvath and the 6 CpGs from the Hannum Clock missing on the EPIC array have a great impact on the performance of the Clocks. They had data from both 450K and EPIC. Additionally, they tested the influence of different preprocessing strategies.  
+  - for the clock of placenta (Lee): not all CpGs included in the clock
+    would have been included *after* our QC, however they were used here
+    because they are needed for the clock (discussed with Steve
+    Horvath).  
 
-https://pubmed.ncbi.nlm.nih.gov/30326963/
+  - for the clock of placenta (Mayne): not all CpGs of the clock are
+    available, because the clock was again trained on 450K/27K data.
+    Although the authors here did not report the comparability between
+    the reduced and full clock, we excluded the 5 missing CpGs (that are
+    in the clock, but not in our data) and predicted age.  
 
-Dhingra et al. (2019) also evaluated the influence of missing CpGs of the Horvath clock by comparing 450K/EPIC data.  
+  - for the clock of Bohlin et al. (cordblood), 8 CpGs are missing in
+    the EPIC data (clock designed on Illumina 450K/27K/CHARM data).
+    Again, the authors did not report a correlation between a reduced
+    and full clock.  
 
-https://pubmed.ncbi.nlm.nih.gov/31002714/
+  - for the clock of Knight et al. (cordblood), 6 CpGs are missing in
+    the EPIC data, because the clock was designed on Illumina 450K/27K
+    data. Here, Knight et al. claimed that the clock would work anyways
+    (tested correlation between estimates from reduced predictor and
+    full predictor).
 
-In summary, it is better to use age-adjusted residuals as a measure of age acceleration/deceleration, compared to the raw difference between estimated and chronological age.
+  - the correlation between the estimated DNAmGA of the full and reduced
+    **Bohlin clock** is r= .99 p \< 2.2e-16 (tested with PREDO 450K)  
 
+  - the mean of the weights of the missing CpGS of the Bohlin clock is
+    -2.159  
+
+  - the *reported* correlation between the estimated DNAmGA of the full
+    and reduced **Knight clock** is r=.995  
+
+  - in our data the correlation is r=.97 p \< 2.2e-16  
+
+  - the estimation from the reduced clock is again on average higher
+    than the estimation from the full clock  
+
+  - the mean of the weights of the missing CpGS of the Bohlin clock is
+    -0.767  
+    \-\> overall, both the reduced and full clock come to quite similar
+    results, but the mean DNAm GA estimate differs (account for by using
+    residuals)
+
+McEwen et al. (2018) tested if the 19 CpGs from the Horvath and the 6
+CpGs from the Hannum Clock missing on the EPIC array have a great impact
+on the performance of the Clocks. They had data from both 450K and EPIC.
+Additionally, they tested the influence of different preprocessing
+strategies.
+
+<https://pubmed.ncbi.nlm.nih.gov/30326963/>
+
+Dhingra et al. (2019) also evaluated the influence of missing CpGs of
+the Horvath clock by comparing 450K/EPIC data.
+
+<https://pubmed.ncbi.nlm.nih.gov/31002714/>
+
+In summary, it is better to use age-adjusted residuals as a measure of
+age acceleration/deceleration, compared to the raw difference between
+estimated and chronological age.
 
 ### Data Preparation
-## CVS, data preparation for models {#dataprepCVSITU}  
+
+## CVS, data preparation for models
 
 *regression input*
 
-```r
+``` r
 # EAAR, without alcohol
 Reg_Input_Data_CVS_ITU_EAAR_n <- Data_CVS_ITU[, c("EAAR_Lee", "Child_Sex", "Gestational_Age_Weeks", "Maternal_Age_Years", "smoking_dichotom", "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders")]
 
@@ -271,46 +338,39 @@ Reg_Input_Data_CVS_ITU_EAAR_n <- Data_CVS_ITU[, c("EAAR_Lee", "Child_Sex", "Gest
 Reg_Input_Data_CVS_ITU_EAAR_wa <- Data_CVS_ITU[, c("EAAR_Lee", "Child_Sex", "Gestational_Age_Weeks", "Maternal_Age_Years", "smoking_dichotom", "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders", "maternal_alcohol_use")]
 ```
 
-
-```r
+``` r
 sapply(Reg_Input_Data_CVS_ITU_EAAR_n, function(x) sum(is.na(x)))
 sapply(Reg_Input_Data_CVS_ITU_EAAR_wa, function(x) sum(is.na(x)))
 ```
 
 data frame without missings
 
-
-```r
+``` r
 Reg_Input_Data_CVS_ITU_EAAR_n_noNa <- na.omit(Reg_Input_Data_CVS_ITU_EAAR_n) 
 dim(Reg_Input_Data_CVS_ITU_EAAR_n_noNa)
 ```
 
-
-```r
+``` r
 Reg_Input_Data_CVS_ITU_EAAR_wa_noNa <- na.omit(Reg_Input_Data_CVS_ITU_EAAR_wa) 
 dim(Reg_Input_Data_CVS_ITU_EAAR_wa_noNa)
 ```
 
-
-```r
+``` r
 skimr::skim(Reg_Input_Data_CVS_ITU_EAAR_n_noNa)
 ```
 
-
-
-```r
+``` r
 save(Reg_Input_Data_CVS_ITU_EAAR_n_noNa, file="InputData/ClockCalculationsInput/Reg_Input_Data_CVS_ITU_EAAR_n_noNa.Rdata")
 save(Reg_Input_Data_CVS_ITU_EAAR_wa_noNa, file="InputData/ClockCalculationsInput/Reg_Input_Data_CVS_ITU_EAAR_wa_noNa.Rdata")
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
-## Cord blood, data preparation for models {#dataprepCordITU}
+## Cord blood, data preparation for models
 
 *regression input*
 
-
-```r
+``` r
 # EAAR without alcohol
 Reg_Input_Data_Cord_ITU_EAAR_n <- Data_Cord_ITU[, c("EAAR_Bohlin", "Child_Sex", "Maternal_Age_Years", "smoking_dichotom", "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders")]
 
@@ -318,39 +378,35 @@ Reg_Input_Data_Cord_ITU_EAAR_n <- Data_Cord_ITU[, c("EAAR_Bohlin", "Child_Sex", 
 Reg_Input_Data_Cord_ITU_EAAR_wa <- Data_Cord_ITU[, c("EAAR_Bohlin", "Child_Sex", "Maternal_Age_Years", "smoking_dichotom",  "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders", "maternal_alcohol_use")]
 ```
 
-
-```r
+``` r
 sapply(Data_Cord_ITU, function(x) sum(is.na(x)))
 ```
 
 data frame without missings
 
-```r
+``` r
 Reg_Input_Data_Cord_ITU_EAAR_noNa_n <- na.omit(Reg_Input_Data_Cord_ITU_EAAR_n) 
 dim(Reg_Input_Data_Cord_ITU_EAAR_noNa_n)
 Reg_Input_Data_Cord_ITU_EAAR_noNa_wa <- na.omit(Reg_Input_Data_Cord_ITU_EAAR_wa) 
 dim(Reg_Input_Data_Cord_ITU_EAAR_noNa_wa)
 ```
 
-
-```r
+``` r
 skimr::skim(Reg_Input_Data_Cord_ITU_EAAR_noNa_n)
 ```
 
-
-
-```r
+``` r
 save(Reg_Input_Data_Cord_ITU_EAAR_noNa_wa, file="InputData/ClockCalculationsInput/Reg_Input_Data_Cord_ITU_EAAR_noNa_wa.Rdata")
 save(Reg_Input_Data_Cord_ITU_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Cord_ITU_EAAR_noNa_n.Rdata")
 ```
 
 [to the top](#top)
 
-## Placenta, data preparation for model {#dataprepPlacentaITU}  
+## Placenta, data preparation for model
 
 *regression input*
 
-```r
+``` r
 # without alcohol
 Reg_Input_Data_Placenta_ITU_EAAR_n <- Data_Placenta_ITU[, c("EAAR_Lee", "Child_Sex", "Maternal_Age_Years", "smoking_dichotom",  "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders")]
 
@@ -358,8 +414,7 @@ Reg_Input_Data_Placenta_ITU_EAAR_n <- Data_Placenta_ITU[, c("EAAR_Lee", "Child_S
 Reg_Input_Data_Placenta_ITU_EAAR_wa <- Data_Placenta_ITU[, c("EAAR_Lee", "Child_Sex", "Maternal_Age_Years", "smoking_dichotom",  "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders", "maternal_alcohol_use")]
 ```
 
-
-```r
+``` r
 # for split by sex
 # with alcohol
 Reg_Input_Data_Placenta_male_ITU_EAAR_wa <- Data_Placenta_male_ITU[, c("EAAR_Lee", "Child_Sex", "Maternal_Age_Years", "smoking_dichotom",  "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders", "maternal_alcohol_use")]
@@ -375,16 +430,13 @@ Reg_Input_Data_Placenta_female_ITU_EAAR_wa <- Data_Placenta_female_ITU[, c("EAAR
 Reg_Input_Data_Placenta_female_ITU_EAAR_n <- Data_Placenta_female_ITU[, c("EAAR_Lee", "Child_Sex", "Maternal_Age_Years", "smoking_dichotom",  "Delivery_mode_dichotom", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight","Child_Birth_Length", "Child_Head_Circumference_At_Birth","Parity_dichotom", "Induced_Labour", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders")]
 ```
 
-
-
-```r
+``` r
 sapply(Data_Placenta_ITU, function(x) sum(is.na(x)))
 ```
 
-
 data frame without missings
 
-```r
+``` r
 Reg_Input_Data_Placenta_ITU_EAAR_noNa_n <- na.omit(Reg_Input_Data_Placenta_ITU_EAAR_n) 
 dim(Reg_Input_Data_Placenta_ITU_EAAR_noNa_n)
 
@@ -392,8 +444,7 @@ Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa <- na.omit(Reg_Input_Data_Placenta_ITU_
 dim(Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa)
 ```
 
-
-```r
+``` r
 # for split by sex
 Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_wa <- na.omit(Reg_Input_Data_Placenta_male_ITU_EAAR_wa) 
 dim(Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_wa)
@@ -409,22 +460,17 @@ Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n <- na.omit(Reg_Input_Data_Placent
 dim(Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n)
 ```
 
-
-```r
+``` r
 skimr::skim(Reg_Input_Data_Placenta_ITU_EAAR_noNa_n)
 ```
 
-
-
-```r
+``` r
 save(Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa.Rdata")
 
 save(Reg_Input_Data_Placenta_ITU_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_ITU_EAAR_noNa_n.Rdata")
 ```
 
-
-
-```r
+``` r
 save(Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_wa, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_wa.Rdata")
 save(Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_n.Rdata")
 
@@ -432,17 +478,15 @@ save(Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_wa, file="InputData/ClockCalcu
 save(Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n.Rdata")
 ```
 
+[to the top](#top)
 
-[to the top](#top) 
+## cord blood data preparation for model
 
-
-## cord blood data preparation for model {#dataprepCordPREDO}  
 *EPIC*
 
 *regression input*
 
-
-```r
+``` r
 # EAAR without alcohol
 Reg_Input_Data_Cordblood_PREDO_EAAR_n <- Data_PREDO_EPICcord[, c("EAAR_Bohlin", "Child_Sex", "Gestational_Age", "Maternal_Age_18PopRegandBR", "smoking_dichotom", "Delivery_Mode_dichotom", "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight","Birth_Length", "Head_Circumference_at_Birth","Parity_dichotom",  "inducedlabour", "maternal_diabetes_dichotom", "maternal_hypertension_dichotom", "Maternal_Mental_Disorders_By_Childbirth")]
 
@@ -450,10 +494,9 @@ Reg_Input_Data_Cordblood_PREDO_EAAR_n <- Data_PREDO_EPICcord[, c("EAAR_Bohlin", 
 Reg_Input_Data_Cordblood_PREDO_EAAR_wa <- Data_PREDO_EPICcord[, c("EAAR_Bohlin", "Child_Sex", "Gestational_Age", "Maternal_Age_18PopRegandBR", "smoking_dichotom", "Alcohol_Use_In_Early_Pregnancy_19Oct", "Delivery_Mode_dichotom", "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight","Birth_Length", "Head_Circumference_at_Birth","Parity_dichotom",  "inducedlabour", "maternal_diabetes_dichotom", "maternal_hypertension_dichotom", "Maternal_Mental_Disorders_By_Childbirth")]
 ```
 
-
 data frame without missings
 
-```r
+``` r
 Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n <- na.omit(Reg_Input_Data_Cordblood_PREDO_EAAR_n) 
 dim(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n)
 
@@ -461,29 +504,25 @@ Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_wa <- na.omit(Reg_Input_Data_Cordblood_
 dim(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_wa)
 ```
 
-
-```r
+``` r
 skimr::skim(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n)
 ```
 
-
-
-```r
+``` r
 save(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_wa, file="InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_wa.Rdata")
 
 save(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n.Rdata")
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
+## cord blood data preparation for model
 
-## cord blood data preparation for model {#dataprepCord450KPREDO}  
 *450K*
 
 *regression input*
 
-
-```r
+``` r
 # EAAR without alcohol
 Reg_Input_Data_Cordblood_PREDO450K_EAAR_n <- Data_PREDO_450Kcord[, c("EAAR_Bohlin", "Child_Sex", "Gestational_Age", "Maternal_Age_18PopRegandBR", "smoking_dichotom", "Delivery_Mode_dichotom", "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight","Birth_Length", "Head_Circumference_at_Birth","Parity_dichotom",  "inducedlabour", "maternal_diabetes_dichotom", "maternal_hypertension_dichotom", "Maternal_Mental_Disorders_By_Childbirth")]
 
@@ -491,16 +530,13 @@ Reg_Input_Data_Cordblood_PREDO450K_EAAR_n <- Data_PREDO_450Kcord[, c("EAAR_Bohli
 Reg_Input_Data_Cordblood_PREDO450K_EAAR_wa <- Data_PREDO_450Kcord[, c("EAAR_Bohlin", "Child_Sex", "Gestational_Age", "Maternal_Age_18PopRegandBR", "smoking_dichotom", "Alcohol_Use_In_Early_Pregnancy_19Oct", "Delivery_Mode_dichotom", "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight","Birth_Length", "Head_Circumference_at_Birth","Parity_dichotom",  "inducedlabour", "maternal_diabetes_dichotom", "maternal_hypertension_dichotom", "Maternal_Mental_Disorders_By_Childbirth")]
 ```
 
-
-
-```r
+``` r
 sapply(Reg_Input_Data_Cordblood_PREDO450K_EAAR_wa, function(x) sum(is.na(x)))
 ```
 
-
 data frame without missings
 
-```r
+``` r
 Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_wa <- na.omit(Reg_Input_Data_Cordblood_PREDO450K_EAAR_wa) 
 dim(Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_wa)
 
@@ -508,28 +544,25 @@ Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n <- na.omit(Reg_Input_Data_Cordblo
 dim(Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n)
 ```
 
-
-```r
+``` r
 skimr::skim(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n)
 ```
 
-
-
-```r
+``` r
 save(Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_wa, file="InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_wa.Rdata")
 
 save(Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n.Rdata")
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
-## placenta: data preparation for model {#dataprepPlacentaPREDO}  
+## placenta: data preparation for model
+
 *Placenta EPIC*
 
 *regression input*
 
-
-```r
+``` r
 # EAAR (with ethnicity) without alcohol
 Reg_Input_Data_Placenta_PREDO_EAAR_n <- Data_PREDO_EPICplacenta[, c("EAAR_Lee", "Child_Sex", "Maternal_Age_18PopRegandBR", "smoking_dichotom", "Delivery_Mode_dichotom", "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight","Birth_Length", "Head_Circumference_at_Birth","Parity_dichotom",  "inducedlabour", "maternal_diabetes_dichotom", "maternal_hypertension_dichotom", "Maternal_Mental_Disorders_By_Childbirth")]
 
@@ -537,8 +570,7 @@ Reg_Input_Data_Placenta_PREDO_EAAR_n <- Data_PREDO_EPICplacenta[, c("EAAR_Lee", 
 Reg_Input_Data_Placenta_PREDO_EAAR_wa <- Data_PREDO_EPICplacenta[, c("EAAR_Lee", "Child_Sex", "Maternal_Age_18PopRegandBR", "smoking_dichotom", "Alcohol_Use_In_Early_Pregnancy_19Oct", "Delivery_Mode_dichotom", "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight","Birth_Length", "Head_Circumference_at_Birth","Parity_dichotom",  "inducedlabour", "maternal_diabetes_dichotom", "maternal_hypertension_dichotom", "Maternal_Mental_Disorders_By_Childbirth")]
 ```
 
-
-```r
+``` r
 # for split by sex
 # with alcohol
 Reg_Input_Data_Placenta_male_PREDO_EAAR_wa <- Data_PREDO_Placenta_male[, c("EAAR_Lee", "Child_Sex", "Maternal_Age_18PopRegandBR", "smoking_dichotom", "Alcohol_Use_In_Early_Pregnancy_19Oct", "Delivery_Mode_dichotom", "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight","Birth_Length", "Head_Circumference_at_Birth","Parity_dichotom",  "inducedlabour", "maternal_diabetes_dichotom", "maternal_hypertension_dichotom", "Maternal_Mental_Disorders_By_Childbirth")]
@@ -556,7 +588,7 @@ Reg_Input_Data_Placenta_female_PREDO_EAAR_n <- Data_PREDO_Placenta_female[, c("E
 
 data frame without missings
 
-```r
+``` r
 Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n <- na.omit(Reg_Input_Data_Placenta_PREDO_EAAR_n) 
 dim(Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n)
 
@@ -577,21 +609,16 @@ Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_wa <- na.omit(Reg_Input_Data_Plac
 dim(Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_wa)
 ```
 
-
-
-```r
+``` r
 skimr::skim(Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n)
 ```
 
-
-
-```r
+``` r
 save(Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa.Rdata")
 save(Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n.Rdata")
 ```
 
-
-```r
+``` r
 save(Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_wa, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_wa.Rdata")
 save(Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_n.Rdata")
 
@@ -599,14 +626,15 @@ save(Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_wa, file="InputData/ClockCal
 save(Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_n, file="InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_n.Rdata")
 ```
 
+[to the top](#top)
 
-[to the top](#top)  
+-----
 
-***
-# Sample visualization {#Samples}  
+# Sample visualization
+
 Fig. 1
 
-```r
+``` r
 Venn_ITU <- euler(c("CVS"=264, "Placenta \n(fetal side)"=486, "Cord blood"=426, "CVS&Placenta \n(fetal side)"=86, "Placenta \n(fetal side)&Cord blood"=390, "CVS&Cord blood"=73, "CVS&Placenta \n(fetal side)&Cord blood"=66))
 
 Venn_PREDO <- euler(c("Placenta \n(decidual \nside)"=139, "Cord \nblood \n(EPIC)"=149, "Cord blood (450K)"=795, "Placenta \n(decidual \nside)&Cord \nblood \n(EPIC)"=117))
@@ -627,17 +655,15 @@ grid::grid.text("Cord blood\n(450K) \nn = 795", x=0.72, y=0.5, gp=gpar(col="blac
 grid::grid.text("117", x=0.23, y=0.3, gp=gpar(col="black", fontsize=10, font="Arial")) # overlap
 ```
 
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/")), dir.create(file.path(getwd(), "Results/")), FALSE)
 ```
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/")), dir.create(file.path(getwd(), "Results/Figures/")), FALSE)
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/ITU_sample.png", width=2300, height=1500, res=300)
 plot(Venn_ITU, counts=TRUE, font=1, cex=2, alpha=0.5, fill=c("grey", "lightgrey", "darkgrey"), labels=F)
 grid::grid.text("CVS \nn = 264", x=0.3, y=0.3, gp=gpar(col="black", fontsize=11, font="Arial")) #CVS
@@ -650,8 +676,7 @@ grid::grid.text("66", x=0.43, y=0.45, gp=gpar(col="black", fontsize=10, font="Ar
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/PREDO_sample.png", width=2300, height=1500, res=300)
 plot(Venn_PREDO, counts=TRUE, font=1, cex=1, alpha=0.5, fill=c("grey", "lightgrey", "darkgrey"), labels=F)
 grid::grid.text("Placenta\n(decidual side) \nn = 139", x=0.08, y=0.3, gp=gpar(col="black", fontsize=11, font="Arial")) # placenta
@@ -661,20 +686,19 @@ grid::grid.text("117", x=0.23, y=0.3, gp=gpar(col="black", fontsize=10, font="Ar
 dev.off()
 ```
 
-
-# ITU Descriptives {#ITUDescriptive}  
+# ITU Descriptives
 
 *Table 1 & 2*
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/diffTissues")), dir.create(file.path(getwd(), "Results/Figures/diffTissues")), FALSE)
 ```
 
 ## ITU CVS
+
 Clock
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_CVS_ITU[ ,c("Gestational_Age_Weeks", "gestage_at_CVS_weeks","DNAmGA_Lee","delta_Lee","zdelta_Lee", "EAAR_Lee", "DNAmGA_Mayne","delta_Mayne","zdelta_Mayne","EAAR_Mayne")])
 )
@@ -682,7 +706,7 @@ knitr::kable(
 
 Cell types
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_CVS_ITU[ ,c("Trophoblasts", "Stromal", "Hofbauer", "Endothelial", "nRBC", "Syncytiotrophoblast")])
 )
@@ -705,34 +729,33 @@ dev.off()
 
 predictors descriptive
 
-```r
+``` r
 CVS_Preds_ITU <- Data_CVS_ITU[,c("Child_Sex", "Delivery_mode_dichotom", "Induced_Labour", "Parity_dichotom", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders", "smoking_dichotom", "maternal_alcohol_use", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth")]
 colnames(CVS_Preds_ITU) <- c("child_sex", "delivery_mode", "induced_labor", "parity", "hypertension", "diabetes", "mental_disorders", "smoking", "alcohol", "maternal_age", "maternal_BMI", "birth_weight", "birth_length", "head_circumference")
 CVS_Preds_ITU$group <- "ITU"
 ```
 
-
-```r
+``` r
 CVS_Preds_ITU %>%  
 select_if(is.factor) %>% 
 Hmisc::describe()
 ```
 
-
-```r
+``` r
 CVS_Preds_ITU %>%
 select_if(is.numeric) %>% 
 psych::describe()
 ```
 
-- model without alcohol
+  - model without alcohol
 
 <!-- ```{r} -->
+
 <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_CVS_ITU_EAAR_n_noNa.Rdata") -->
+
 <!-- ``` -->
 
-
-```r
+``` r
 Reg_Input_Data_CVS_ITU_EAAR_n_noNa %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -742,14 +765,13 @@ Reg_Input_Data_CVS_ITU_EAAR_n_noNa %>%
   Hmisc::describe()
 ```
 
-- model with alcohol
-<!-- with alcohol -->
-<!-- ```{r} -->
-<!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_CVS_ITU_EAAR_wa_noNa.Rdata") -->
-<!-- ``` -->
+  - model with alcohol <!-- with alcohol --> <!-- ```{r} -->
+    <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_CVS_ITU_EAAR_wa_noNa.Rdata") -->
+    <!-- ``` -->
 
+<!-- end list -->
 
-```r
+``` r
 Reg_Input_Data_CVS_ITU_EAAR_wa_noNa %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -757,18 +779,17 @@ Reg_Input_Data_CVS_ITU_EAAR_wa_noNa %>%
 #alcohol use 14.3%
 ```
 
-
-```r
+``` r
 Reg_Input_Data_CVS_ITU_EAAR_wa_noNa %>%
   select_if(is.numeric) %>%
   Hmisc::describe()
 ```
 
-
 ## ITU Cord blood
+
 Clocks
 
-```r
+``` r
 knitr::kable(
 psych::describe(Data_Cord_ITU[ ,c("Gestational_Age_Weeks","DNAmGA_Knight","delta_Knight","zdelta_Knight", "EAAR_Knight", "DNAmGA_Bohlin","delta_Bohlin","zdelta_Bohlin", "EAAR_Bohlin")])
 )
@@ -776,7 +797,7 @@ psych::describe(Data_Cord_ITU[ ,c("Gestational_Age_Weeks","DNAmGA_Knight","delta
 
 cell types
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_Cord_ITU[ ,c("CD8T", "CD4T", "NK", "Bcell", "Mono", "Gran", "nRBC")])
 )
@@ -800,34 +821,33 @@ dev.off()
 
 predictors descriptive
 
-```r
+``` r
 Cordblood_Preds_ITU <- Data_Cord_ITU[,c("Child_Sex", "Delivery_mode_dichotom", "Induced_Labour", "Parity_dichotom", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders", "smoking_dichotom", "maternal_alcohol_use", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth")]
 colnames(Cordblood_Preds_ITU) <- c("child_sex", "delivery_mode", "induced_labor", "parity", "hypertension", "diabetes", "mental_disorders", "smoking", "alcohol", "maternal_age", "maternal_BMI", "birth_weight", "birth_length", "head_circumference")
 Cordblood_Preds_ITU$group <- "ITU"
 ```
 
-
-```r
+``` r
 Cordblood_Preds_ITU %>%  
 select_if(is.factor) %>% 
 Hmisc::describe()
 ```
 
-
-```r
+``` r
 Cordblood_Preds_ITU %>%  
 select_if(is.numeric) %>% 
 Hmisc::describe()
 ```
 
-- model without alcohol
+  - model without alcohol
 
 <!-- ```{r} -->
+
 <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_Cord_ITU_EAAR_noNa_n.Rdata") -->
+
 <!-- ``` -->
 
-
-```r
+``` r
 Reg_Input_Data_Cord_ITU_EAAR_noNa_n %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -837,14 +857,15 @@ Reg_Input_Data_Cord_ITU_EAAR_noNa_n %>%
   Hmisc::describe()
 ```
 
-- model with alcohol
+  - model with alcohol
 
 <!-- ```{r} -->
+
 <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_Cord_ITU_EAAR_noNa_wa.Rdata") -->
+
 <!-- ``` -->
 
-
-```r
+``` r
 Reg_Input_Data_Cord_ITU_EAAR_noNa_wa %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -857,9 +878,10 @@ Reg_Input_Data_Cord_ITU_EAAR_noNa_wa %>%
 ```
 
 ## ITU Placenta
+
 Clocks
 
-```r
+``` r
 knitr::kable(
 psych::describe(Data_Placenta_ITU[ ,c("Gestational_Age_Weeks","DNAmGA_Lee","delta_Lee","zdelta_Lee", "EAAR_Lee", "DNAmGA_Mayne","delta_Mayne","zdelta_Mayne","EAAR_Mayne", "TimeDifferencePlacenta_birth_sampling")])
 )
@@ -867,7 +889,7 @@ psych::describe(Data_Placenta_ITU[ ,c("Gestational_Age_Weeks","DNAmGA_Lee","delt
 
 cell types
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_Placenta_ITU[ ,c("Trophoblasts", "Stromal", "Hofbauer", "Endothelial", "nRBC", "Syncytiotrophoblast")])
 )
@@ -891,34 +913,33 @@ plot_cells_placenta
 
 predictors descriptive
 
-```r
+``` r
 Placenta_Preds_ITU <- Data_Placenta_ITU[,c("Child_Sex", "Delivery_mode_dichotom", "Induced_Labour", "Parity_dichotom", "Maternal_Hypertension_dichotom", "Maternal_Diabetes_dichotom", "Maternal_Mental_Disorders", "smoking_dichotom", "maternal_alcohol_use", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth")]
 colnames(Placenta_Preds_ITU) <- c("child_sex", "delivery_mode", "induced_labor", "parity", "hypertension", "diabetes", "mental_disorders", "smoking", "alcohol", "maternal_age", "maternal_BMI", "birth_weight", "birth_length", "head_circumference")
 Placenta_Preds_ITU$group <- "ITU"
 ```
 
-
-```r
+``` r
 Placenta_Preds_ITU %>%  
 select_if(is.factor) %>% 
 Hmisc::describe()
 ```
 
-
-```r
+``` r
 Placenta_Preds_ITU %>%  
 select_if(is.numeric) %>% 
 Hmisc::describe()
 ```
 
-- model without alcohol
+  - model without alcohol
 
 <!-- ```{r} -->
+
 <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_ITU_EAAR_noNa_n.Rdata") -->
+
 <!-- ``` -->
 
-
-```r
+``` r
 Reg_Input_Data_Placenta_ITU_EAAR_noNa_n %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -928,14 +949,15 @@ Reg_Input_Data_Placenta_ITU_EAAR_noNa_n %>%
   Hmisc::describe()
 ```
 
-- model with alcohol
+  - model with alcohol
 
 <!-- ```{r} -->
+
 <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa.Rdata") -->
+
 <!-- ``` -->
 
-
-```r
+``` r
 Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -947,16 +969,15 @@ Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa %>%
 # alcohol use 10.2%
 ```
 
+[to the top](#top)
 
-[to the top](#top) 
-
-
-# PREDO Descriptives {#PREDODescriptive}  
+# PREDO Descriptives
 
 ## Cord blood EPIC
+
 Clocks
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_PREDO_EPICcord[,c("Gestational_Age","DNAmGA_Knight","delta_Knight","zdelta_Knight", "EAAR_Knight","DNAmGA_Bohlin","delta_Bohlin","zdelta_Bohlin",  "EAAR_Bohlin")])
 )
@@ -964,7 +985,7 @@ knitr::kable(
 
 cell types
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_PREDO_EPICcord[ ,c("CD8T", "CD4T", "NK", "Bcell", "Mono", "Gran", "nRBC")])
 )
@@ -991,7 +1012,7 @@ plot_cells_cord_epic
 
 predictors descriptive
 
-```r
+``` r
 Cordblood_Preds_PREDO <- Data_PREDO_EPICcord[,c("Child_Sex","Delivery_Mode_dichotom","inducedlabour","Parity_dichotom", "maternal_hypertension_dichotom", "maternal_diabetes_dichotom", "Maternal_Mental_Disorders_By_Childbirth","smoking_dichotom","Alcohol_Use_In_Early_Pregnancy_19Oct","Maternal_Age_18PopRegandBR",   "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth")]
 colnames(Cordblood_Preds_PREDO) <- c("child_sex", "delivery_mode", "induced_labor", "parity", "hypertension", "diabetes", "mental_disorders", "smoking", "alcohol", "maternal_age", "maternal_BMI", "birth_weight", "birth_length", "head_circumference")
 Cordblood_Preds_PREDO$group <- "PREDO"
@@ -1000,25 +1021,23 @@ levels(Cordblood_Preds_PREDO$induced_labor)[levels(Cordblood_Preds_PREDO$induced
 levels(Cordblood_Preds_PREDO$diabetes)[levels(Cordblood_Preds_PREDO$diabetes)=="no diabetes in current pregnancy"] <- "no diabetes this pregnancy"
 ```
 
-
-```r
+``` r
 Cordblood_Preds_PREDO %>%  
 select_if(is.factor) %>% 
 Hmisc::describe()
 ```
 
-
-```r
+``` r
 Cordblood_Preds_PREDO %>%
 select_if(is.numeric) %>% 
 psych::describe()
 ```
 
-
 ## Cord blood 450K
+
 Clocks
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_PREDO_450Kcord[ ,c("Gestational_Age","DNAmGA_Knight","delta_Knight","zdelta_Knight", "EAAR_Knight", "DNAmGA_Bohlin","delta_Bohlin","zdelta_Bohlin", "EAAR_Bohlin")])
 )
@@ -1026,7 +1045,7 @@ knitr::kable(
 
 cell types
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_PREDO_450Kcord[ ,c("CD8T", "CD4T", "NK", "Bcell", "Mono", "Gran", "nRBC")])
 )
@@ -1051,7 +1070,7 @@ plot_cells_cord_450K
 
 predictors descriptive
 
-```r
+``` r
 Cordblood_Preds450K_PREDO <- Data_PREDO_450Kcord[,c("Child_Sex","Delivery_Mode_dichotom","inducedlabour","Parity_dichotom", "maternal_hypertension_dichotom", "maternal_diabetes_dichotom", "Maternal_Mental_Disorders_By_Childbirth","smoking_dichotom","Alcohol_Use_In_Early_Pregnancy_19Oct","Maternal_Age_18PopRegandBR",   "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth")]
 colnames(Cordblood_Preds450K_PREDO) <- c("child_sex", "delivery_mode", "induced_labor", "parity", "hypertension", "diabetes", "mental_disorders", "smoking", "alcohol", "maternal_age", "maternal_BMI", "birth_weight", "birth_length", "head_circumference")
 Cordblood_Preds450K_PREDO$group <- "PREDO"
@@ -1060,24 +1079,23 @@ levels(Cordblood_Preds450K_PREDO$induced_labor)[levels(Cordblood_Preds450K_PREDO
 levels(Cordblood_Preds450K_PREDO$diabetes)[levels(Cordblood_Preds450K_PREDO$diabetes)=="no diabetes in current pregnancy"] <- "no diabetes this pregnancy"
 ```
 
-
-```r
+``` r
 Cordblood_Preds450K_PREDO %>%  
 select_if(is.factor) %>% 
 Hmisc::describe()
 ```
 
-
-```r
+``` r
 Cordblood_Preds450K_PREDO %>%
 select_if(is.numeric) %>% 
 psych::describe()
 ```
 
 ## Placenta EPIC
+
 Clocks
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_PREDO_EPICplacenta[,c("Gestational_Age","DNAmGA_Lee","delta_Lee","zdelta_Lee", "EAAR_Lee", "DNAmGA_Mayne","delta_Mayne","zdelta_Mayne", "EAAR_Mayne")])
 )
@@ -1085,7 +1103,7 @@ knitr::kable(
 
 cell types
 
-```r
+``` r
 knitr::kable(
   psych::describe(Data_PREDO_EPICplacenta[ ,c("Trophoblasts", "Stromal", "Hofbauer", "Endothelial", "nRBC", "Syncytiotrophoblast")])
 )
@@ -1109,7 +1127,7 @@ plot_cells_placenta_predo
 
 predictors descriptive
 
-```r
+``` r
 Placenta_Preds_PREDO <- Data_PREDO_EPICplacenta[,c("Child_Sex","Delivery_Mode_dichotom","inducedlabour","Parity_dichotom", "maternal_hypertension_dichotom", "maternal_diabetes_dichotom", "Maternal_Mental_Disorders_By_Childbirth","smoking_dichotom","Alcohol_Use_In_Early_Pregnancy_19Oct","Maternal_Age_18PopRegandBR",   "Maternal_PrepregnancyBMI18oct28new", "Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth")]
 colnames(Placenta_Preds_PREDO) <- c("child_sex", "delivery_mode", "induced_labor", "parity", "hypertension", "diabetes", "mental_disorders", "smoking", "alcohol", "maternal_age", "maternal_BMI", "birth_weight", "birth_length", "head_circumference")
 Placenta_Preds_PREDO$group <- "PREDO"
@@ -1118,28 +1136,27 @@ levels(Placenta_Preds_PREDO$induced_labor)[levels(Placenta_Preds_PREDO$induced_l
 levels(Placenta_Preds_PREDO$diabetes)[levels(Placenta_Preds_PREDO$diabetes)=="no diabetes in current pregnancy"] <- "no diabetes this pregnancy"
 ```
 
-
-```r
+``` r
 Placenta_Preds_PREDO %>%  
 select_if(is.factor) %>% 
 Hmisc::describe()
 ```
 
-
-```r
+``` r
 Placenta_Preds_PREDO %>%
 select_if(is.numeric) %>% 
 psych::describe()
 ```
 
-- model without alcohol
+  - model without alcohol
 
 <!-- ```{r} -->
+
 <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n.Rdata") -->
+
 <!-- ``` -->
 
-
-```r
+``` r
 Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -1149,14 +1166,15 @@ Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n %>%
   Hmisc::describe()
 ```
 
-- model with alcohol
+  - model with alcohol
 
 <!-- ```{r} -->
+
 <!-- load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa.Rdata") -->
+
 <!-- ``` -->
 
-
-```r
+``` r
 Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa %>%
   select_if(is.factor) %>%
   Hmisc::describe()
@@ -1168,12 +1186,13 @@ Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa %>%
 #12.3% maternal alcohol use
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
 # Cell Type Overview
+
 **Cell Type Overview ITU & PREDO**
 
-```r
+``` r
 #grid.arrange(plot_cells_cord, plot_cells_cord_epic, plot_cells_cord_450K, ncol=3)
 
 ggarrange(plot_cells_cord +
@@ -1207,18 +1226,19 @@ ggarrange(plot_cells_cvs +
           nrow = 1)
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
-# comparison PREDO & ITU in predictors {#predictorsITUPREDO}  
+# comparison PREDO & ITU in predictors
+
 ## placenta
 
-```r
+``` r
 Placenta_Preds <- rbind(Placenta_Preds_ITU, Placenta_Preds_PREDO)
 ```
 
 continuous predictors, t-test
 
-```r
+``` r
 placenta_pred_t <- Placenta_Preds %>% 
   select_if(is.numeric) %>%
   map_df(~ broom::tidy(t.test(. ~ Placenta_Preds$group)), .id = 'var')
@@ -1226,22 +1246,20 @@ placenta_pred_t <- Placenta_Preds %>%
 placenta_pred_t 
 ```
 
-
-```r
+``` r
 t.test(maternal_age ~ group, data=Placenta_Preds)$estimate
 t.test(maternal_BMI ~ group, data=Placenta_Preds)$estimate
 t.test(birth_weight ~ group, data=Placenta_Preds)$estimate
 t.test(birth_length ~ group, data=Placenta_Preds)$estimate
 ```
 
-
-```r
+``` r
 p.adjust(placenta_pred_t$p.value, method = "bonferroni", n = 15)
 ```
 
 categorical
 
-```r
+``` r
 placenta_pred_chi <- Placenta_Preds %>% 
   select_if(is.factor) %>%
   map_df(~ broom::tidy(chisq.test(. ,Placenta_Preds$group, correct=F)), .id = 'var')
@@ -1249,13 +1267,11 @@ placenta_pred_chi <- Placenta_Preds %>%
 placenta_pred_chi
 ```
 
-
-```r
+``` r
 p.adjust(placenta_pred_chi$p.value, method = "bonferroni", n = 15)
 ```
 
-
-```r
+``` r
 table(Placenta_Preds$delivery_mode, Placenta_Preds$group)
 table(Placenta_Preds$hypertension, Placenta_Preds$group)
 table(Placenta_Preds$diabetes, Placenta_Preds$group)
@@ -1264,14 +1280,13 @@ table(Placenta_Preds$smoking, Placenta_Preds$group)
 
 ## cordblood EPIC
 
-
-```r
+``` r
 Cordblood_Preds <- rbind(Cordblood_Preds_ITU, Cordblood_Preds_PREDO)
 ```
 
 continuous predictors, t-test
 
-```r
+``` r
 cordblood_pred_t <- Cordblood_Preds %>% 
   select_if(is.numeric) %>%
   map_df(~ broom::tidy(t.test(. ~ Cordblood_Preds$group)), .id = 'var')
@@ -1280,20 +1295,19 @@ cordblood_pred_t
 # maternal age, maternal BMI
 ```
 
-```r
+``` r
 t.test(maternal_age ~ group, data=Cordblood_Preds)$estimate
 t.test(maternal_BMI ~ group, data=Cordblood_Preds)$estimate
 ```
 
-
-```r
+``` r
 p.adjust(cordblood_pred_t$p.value, method = "bonferroni", n = 15)
 # only maternal age
 ```
 
 categorical
 
-```r
+``` r
 cordblood_pred_chi <- Cordblood_Preds %>% 
   select_if(is.factor) %>%
   map_df(~ broom::tidy(chisq.test(. ,Cordblood_Preds$group, correct=F)), .id = 'var')
@@ -1302,14 +1316,12 @@ cordblood_pred_chi
 # parity, hypertension, smoking
 ```
 
-
-```r
+``` r
 p.adjust(cordblood_pred_chi$p.value, method = "bonferroni", n = 15)
 # only hypertension
 ```
 
-
-```r
+``` r
 table(Cordblood_Preds$delivery_mode, Cordblood_Preds$group)
 table(Cordblood_Preds$hypertension, Cordblood_Preds$group)
 table(Cordblood_Preds$diabetes, Cordblood_Preds$group)
@@ -1318,13 +1330,13 @@ table(Cordblood_Preds$smoking, Cordblood_Preds$group)
 
 ## cordblood 450K
 
-```r
+``` r
 Cordblood_Preds450K <- rbind(Cordblood_Preds_ITU, Cordblood_Preds450K_PREDO)
 ```
 
 continuous predictors, t-test
 
-```r
+``` r
 cordblood_pred450K_t <- Cordblood_Preds450K %>% 
   select_if(is.numeric) %>%
   map_df(~ broom::tidy(t.test(. ~ Cordblood_Preds450K$group)), .id = 'var')
@@ -1333,20 +1345,18 @@ cordblood_pred450K_t
 # maternal age and BMI
 ```
 
-
-```r
+``` r
 t.test(maternal_age ~ group, data=Cordblood_Preds450K)$estimate
 t.test(maternal_BMI ~ group, data=Cordblood_Preds450K)$estimate
 ```
 
-
-```r
+``` r
 p.adjust(cordblood_pred450K_t$p.value, method = "bonferroni", n = 15)
 ```
 
 categorical
 
-```r
+``` r
 cordblood_pred450K_chi <- Cordblood_Preds450K %>% 
   select_if(is.factor) %>%
   map_df(~ broom::tidy(chisq.test(. ,Cordblood_Preds450K$group, correct=F)), .id = 'var')
@@ -1355,52 +1365,47 @@ cordblood_pred450K_chi
 # parity, hypertension, diabetes, alcohol
 ```
 
-
-```r
+``` r
 p.adjust(cordblood_pred450K_chi$p.value, method = "bonferroni", n = 15)
 # only parity, hypertension
 ```
 
-
-```r
+``` r
 table(Cordblood_Preds450K$parity, Cordblood_Preds450K$group)
 table(Cordblood_Preds450K$hypertension, Cordblood_Preds450K$group)
 table(Cordblood_Preds450K$diabetes, Cordblood_Preds450K$group)
 table(Cordblood_Preds450K$alcohol, Cordblood_Preds450K$group)
 ```
+
 [to the top](#top)
 
 # Predictors correlations
-Fig. 2   
 
-## ITU: look at predictors, in full data (all persons) {#PredictorsITUAll}  
+Fig. 2
 
+## ITU: look at predictors, in full data (all persons)
 
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/predictors_cors")), dir.create(file.path(getwd(), "Results/Figures/predictors_cors")), FALSE)
 ```
 
-
-```r
+``` r
 Input_ITU_all <- Data_ITU_all[ ,!(names(Data_ITU_all) %in% c("Sample_Name", "PC1_ethnicity", "PC2_ethnicity"))]
 names(Input_ITU_all) <- c("child sex", "maternal age", "maternal smooking", "delivery mode", "maternal BMI", "birth weight", "birth length", "head circumference", "Parity", "induced labor", "maternal hypertension", "maternal diabetes", "maternal mental disorders", "maternal alcohol use")
 ```
 
-
-```r
+``` r
 Input_M_all <- model.matrix(~0+., data=Input_ITU_all)
 colnames(Input_M_all) <- c("male","female", "maternal age", "maternal smoking", "delivery mode", "maternal BMI", "birth weight", "birth length", "head circumference", "parity", "induced labor", "maternal hypertension", "maternal diabetes", "maternal mental disorders", "maternal alcohol use")
 ```
 
-
-```r
+``` r
 Input_M_all %>%
   cor(use="pairwise.complete.obs") %>% 
   corrplot(type="upper", tl.col="black")
 ```
 
-
-```r
+``` r
 png("Results/Figures/predictors_cors/ITU_all.png", width=1600, height= 1500, res=350)
 Input_M_all %>%
   cor(use="pairwise.complete.obs") %>% 
@@ -1409,37 +1414,31 @@ Input_M_all %>%
 dev.off()
 ```
 
-
-
-```r
+``` r
 corr.test(Input_ITU_all[6:8])
 ```
 
 [to the top](#top)
 
-## PREDO: look at predictors, in full data (all persons) {#PredictorsPREDOAll}
+## PREDO: look at predictors, in full data (all persons)
 
-
-```r
+``` r
 Input_PREDO_EPIC_all <- Data_PREDO_EPIC_all[ ,!(names(Data_PREDO_EPIC_all) %in% c("Sample_Name", "PC1", "PC2"))]
 names(Input_PREDO_EPIC_all) <- c("child sex", "maternal age", "maternal smooking", "delivery mode", "maternal BMI", "birth weight", "birth length", "head circumference", "parity", "induced labor", "maternal hypertension", "maternal diabetes", "maternal mental disorders", "maternal alcohol use")
 ```
 
-
-```r
+``` r
 Input_M_PREDO_EPIC_all <- model.matrix(~0+., data=Input_PREDO_EPIC_all)
 colnames(Input_M_PREDO_EPIC_all) <- c("male","female", "maternal age", "maternal smoking", "delivery mode", "maternal BMI", "birth weight", "birth length", "head circumference", "parity", "induced labor", "maternal hypertension", "maternal diabetes", "maternal mental disorders", "maternal alcohol use")
 ```
 
-
-```r
+``` r
 Input_M_PREDO_EPIC_all %>%
   cor(use="pairwise.complete.obs") %>% 
   corrplot(type="upper", tl.col="black")
 ```
 
-
-```r
+``` r
 png("Results/Figures/predictors_cors/PREDO_EPIC_all.png", width=1600, height= 1500, res=350)
 Input_M_PREDO_EPIC_all %>%
   cor(use="pairwise.complete.obs") %>% 
@@ -1448,26 +1447,24 @@ dev.off()
 # mar = c(0, 0, 0, 2)
 ```
 
-
-
-```r
+``` r
 corr.test(Input_PREDO_EPIC_all[6:8])
 ```
 
 # correlation DNAmGA-GA
+
 Additional file 7, Table 2
 
-## ITU: gestational age epigenetic age correlation (separate for every tissue) {#corDNAmGAGAITU}
+## ITU: gestational age epigenetic age correlation (separate for every tissue)
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/corDNAmGAGA")), dir.create(file.path(getwd(), "Results/Figures/corDNAmGAGA")), FALSE)
 ```
 
 **CVS**  
 *Lee clock*
 
-```r
+``` r
 cor.test(Data_CVS_ITU$DNAmGA_Lee, Data_CVS_ITU$gestage_at_CVS_weeks, method="pearson")
 
 
@@ -1494,10 +1491,9 @@ plotCVSGA_Lee
 dev.off()
 ```
 
-
 *Mayne clock:*
 
-```r
+``` r
 cor.test(Data_CVS_ITU$DNAmGA_Mayne, Data_CVS_ITU$gestage_at_CVS_weeks, method="pearson")
 
 corCVSGA_Mayne <- ggscatter(Data_CVS_ITU, x = "gestage_at_CVS_weeks", y = "DNAmGA_Mayne", 
@@ -1526,7 +1522,7 @@ dev.off()
 **Cordblood**  
 *Knight clock*
 
-```r
+``` r
 cor.test(Data_Cord_ITU$DNAmGA_Knight, Data_Cord_ITU$Gestational_Age_Weeks, method="pearson")
 
 corCordGA_Knight <- ggscatter(Data_Cord_ITU, x = "Gestational_Age_Weeks", y = "DNAmGA_Knight", 
@@ -1557,10 +1553,9 @@ dev.off()
 ## Suarez: r=.0.52
 ```
 
-
 *Bohlin Clock*
 
-```r
+``` r
 cor.test(Data_Cord_ITU$DNAmGA_Bohlin, Data_Cord_ITU$Gestational_Age_Weeks, method="pearson")
 
 corCordGA_Bohlin <- ggscatter(Data_Cord_ITU, x = "Gestational_Age_Weeks", y = "DNAmGA_Bohlin", 
@@ -1591,7 +1586,7 @@ dev.off()
 **Placenta**  
 *Lee Clock*
 
-```r
+``` r
 cor.test(Data_Placenta_ITU$DNAmGA_Lee, Data_Placenta_ITU$Gestational_Age_Weeks, method="pearson")
 
 corPlacentaGA_Lee <- ggscatter(Data_Placenta_ITU, x = "Gestational_Age_Weeks", y = "DNAmGA_Lee", 
@@ -1617,10 +1612,9 @@ plotPlacentaGA_Lee
 dev.off()
 ```
 
-
 *Mayne Clock*
 
-```r
+``` r
 cor.test(Data_Placenta_ITU$DNAmGA_Mayne, Data_Placenta_ITU$Gestational_Age_Weeks, method="pearson")
 
 corPlacentaGA_Mayne <- ggscatter(Data_Placenta_ITU, x = "Gestational_Age_Weeks", y = "DNAmGA_Mayne", 
@@ -1646,15 +1640,13 @@ plotPlacentaGA_Mayne
 dev.off()
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
-## PREDO: gestational age epigenetic age correlation (separate for every tissue) {#corDNAmGAGAPREDO}  
+## PREDO: gestational age epigenetic age correlation (separate for every tissue)
 
-**450K Cordblood**
-*Knight*
-with the full estimator, Knight
+**450K Cordblood** *Knight* with the full estimator, Knight
 
-```r
+``` r
 cor.test(Data_PREDO_450Kcord$DNAmGA_Knight, Data_PREDO_450Kcord$Gestational_Age, method="pearson")
 
 corCord_Knight_P450 <- ggscatter(Data_PREDO_450Kcord, x = "Gestational_Age", y = "DNAmGA_Knight", 
@@ -1680,9 +1672,7 @@ plotCord_Knight_P450
 dev.off()
 ```
 
-
-
-```r
+``` r
 #Data_PREDO_450Kcord[which.min(Data_PREDO_450Kcord$Gestational_Age),] #(visual) outlier, row 70
 # exclude this outlier to see what correlation would be then
 cor.test(Data_PREDO_450Kcord$DNAmGA_Knight[-70], Data_PREDO_450Kcord$Gestational_Age[-70], method="pearson")
@@ -1694,11 +1684,9 @@ ggscatter(Data_PREDO_450Kcord_outout, x = "Gestational_Age", y = "DNAmGA_Knight"
          xlab = "gestational age at sampling (weeks)", ylab = "predicted gestational age from DNAm (weeks)", title="Cordblood (450K)", subtitle="with outlier removed")
 ```
 
+*Bohlin* with the full estimator
 
-*Bohlin*
-with the full estimator
-
-```r
+``` r
 cor.test(Data_PREDO_450Kcord$DNAmGA_Bohlin, Data_PREDO_450Kcord$Gestational_Age, method="pearson")
 
 corCord_Bohlin_P450 <- ggscatter(Data_PREDO_450Kcord, x = "Gestational_Age", y = "DNAmGA_Bohlin", 
@@ -1727,7 +1715,7 @@ dev.off()
 **EPIC Cordblood**  
 *Knight*
 
-```r
+``` r
 cor.test(Data_PREDO_EPICcord$DNAmGA_Knight, Data_PREDO_EPICcord$Gestational_Age, method="pearson")
 
 corCord_Knight_P <- ggscatter(Data_PREDO_EPICcord, x = "Gestational_Age", y = "DNAmGA_Knight", 
@@ -1755,7 +1743,7 @@ dev.off()
 
 *Bohlin*:
 
-```r
+``` r
 cor.test(Data_PREDO_EPICcord$DNAmGA_Bohlin, Data_PREDO_EPICcord$Gestational_Age, method="pearson")
 
 corCord_Bohlin_P <- ggscatter(Data_PREDO_EPICcord, x = "Gestational_Age", y = "DNAmGA_Bohlin", 
@@ -1784,7 +1772,7 @@ dev.off()
 **EPIC Placenta**  
 *Lee*
 
-```r
+``` r
 cor.test(Data_PREDO_EPICplacenta$DNAmGA_Lee, Data_PREDO_EPICplacenta$Gestational_Age, method="pearson")
 
 corPlacenta_Lee_P <- ggscatter(Data_PREDO_EPICplacenta, x = "Gestational_Age", y = "DNAmGA_Lee", 
@@ -1812,7 +1800,7 @@ dev.off()
 
 *Mayne*
 
-```r
+``` r
 cor.test(Data_PREDO_EPICplacenta$DNAmGA_Mayne, Data_PREDO_EPICplacenta$Gestational_Age, method="pearson")
 
 corPlacenta_Mayne_P <- ggscatter(Data_PREDO_EPICplacenta, x = "Gestational_Age", y = "DNAmGA_Mayne", 
@@ -1838,14 +1826,13 @@ plotPlacenta_Mayne_P
 dev.off()
 ```
 
+[to the top](#top)
 
-[to the top](#top) 
+### DNAmGA GA correlation plots
 
-
-### DNAmGA GA correlation plots {#PlotcorDNAmGAGA}  
 for Additional File 7
 
-```r
+``` r
 cor_bohlin_itu <- ggscatter(Data_Cord_ITU, x = "Gestational_Age_Weeks", y = "DNAmGA_Bohlin", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -1897,16 +1884,14 @@ annotate_figure(Bohlin_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/corDNAmGAGA/Bohlin.png", width= 3600, height=2100, res=480)
 annotate_figure(Bohlin_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
 dev.off()
 ```
 
-
-```r
+``` r
 cor_knight_itu <- ggscatter(Data_Cord_ITU, x = "Gestational_Age_Weeks", y = "DNAmGA_Knight", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -1958,17 +1943,14 @@ annotate_figure(Knight_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
 ```
 
-
-
-```r
+``` r
 png(file="Results/Figures/corDNAmGAGA/Knight.png", width= 3600, height=2100, res=480)
 annotate_figure(Knight_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
 dev.off()
 ```
 
-
-```r
+``` r
 cor_mayne_itu_cvs <- ggscatter(Data_CVS_ITU, x = "gestage_at_CVS_weeks", y = "DNAmGA_Mayne", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -2017,9 +1999,7 @@ annotate_figure(Mayne_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
 ```
 
-
-
-```r
+``` r
 png(file="Results/Figures/corDNAmGAGA/Mayne.png", width= 2400, height=2100, res=480)
 annotate_figure(Mayne_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
@@ -2030,8 +2010,7 @@ cor_mayne_itu_cvs
 dev.off()
 ```
 
-
-```r
+``` r
 cor_lee_itu_cvs <- ggscatter(Data_CVS_ITU, x = "gestage_at_CVS_weeks", y = "DNAmGA_Lee", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -2080,8 +2059,7 @@ annotate_figure(Lee_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/corDNAmGAGA/Lee.png", width= 2400, height=2100, res=480)
 annotate_figure(Lee_DNAmGA_GA,
                 bottom = text_grob("Gestational Age (weeks)", size = 12))
@@ -2093,17 +2071,14 @@ dev.off()
 ```
 
 # Correlation Clocks
-## correlation cordblood clocks {#corCordClocks}  
 
+## correlation cordblood clocks
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/corClocks")), dir.create(file.path(getwd(), "Results/Figures/corClocks")), FALSE)
 ```
 
-
-
-```r
+``` r
 cor_cord_clocks_itu <- 
   ggscatter(Data_Cord_ITU, x = "DNAmGA_Knight", y = "DNAmGA_Bohlin", 
           add = "reg.line", conf.int = TRUE, 
@@ -2161,20 +2136,18 @@ cor_clock_cor <- annotate_figure(clock_cord_cor_gg,
                 bottom = text_grob("DNAmGA estimated by the Knight Clock (weeks)", size = 12), top = text_grob("Correlation Cord blood Clocks \n", size = 14))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/corClocks/cord.png", width= 3600, height=2100, res=480)
 annotate_figure(clock_cord_cor_gg,
                 bottom = text_grob("DNAmGA estimated by the Knight Clock (weeks)", size = 12))
 dev.off()
 ```
 
-[to the top](#top)  
+[to the top](#top)
 
-## correlation placenta clocks {#corPlacentaClocks}  
+## correlation placenta clocks
 
-
-```r
+``` r
 cor_placenta_clocks_itu <- ggscatter(Data_Placenta_ITU, x = "DNAmGA_Mayne", y = "DNAmGA_Lee", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -2212,16 +2185,14 @@ pla_clock_cor <- annotate_figure(clock_placenta_cor_gg,
                 bottom = text_grob("DNAmGA estimated by the Mayne Clock (weeks)", size = 12), top = text_grob("Correlation Placenta Clocks \n", size = 14))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/corClocks/placenta.png", width= 2400, height=1400, res=320)
 annotate_figure(clock_placenta_cor_gg,
                 bottom = text_grob("DNAmGA estimated by the Mayne Clock (weeks)", size = 12))
 dev.off()
 ```
 
-
-```r
+``` r
 ggscatter(Data_CVS_ITU, x = "Gestational_Age_Weeks", y = "delta_Lee", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
@@ -2231,17 +2202,16 @@ ggscatter(Data_CVS_ITU, x = "Gestational_Age_Weeks", y = "delta_Lee",
 [to the top](#top)
 
 # EAAR Descriptive
-## ITU: Visualization EAAR {#plotsEAARITU}  
 
+## ITU: Visualization EAAR
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/EAAR_descriptive")), dir.create(file.path(getwd(), "Results/Figures/EAAR_descriptive")), FALSE)
 ```
 
 **CVS**
 
-```r
+``` r
 EAARCVS <- ggplot(Data_CVS_ITU, aes(x= gestage_at_CVS_weeks, y= EAAR_Lee, label=Sample_Name))+
   geom_point() +geom_text(aes(label=Sample_Name),hjust=0, vjust=0)+
   xlab("gestational age at sampling (weeks)")+
@@ -2268,15 +2238,12 @@ length(na.omit(Data_CVS_ITU$EAAR_Lee))
 # note that 65 rows were removed because they are NA in EAARVS (no ethnicity info)
 ```
 
-
-```r
+``` r
 deltaCVS_boxplot <- ggplot(Data_CVS_ITU, aes(x=delta_Lee))+ geom_histogram(binwidth=0.1)+ labs(x="epigenetic age acceleration delta (Lee clock)", y = "Count (N = 200)")
 #deltaCVS_boxplot
 ```
 
-
-
-```r
+``` r
 png(file="Results/Figures/EAAR_descriptive/CVS.png",width=2200, height=1400, res=300)
 ggplot(Data_CVS_ITU, aes(x=EAAR_Lee))+ geom_histogram(binwidth=0.1)+ labs(x="EAAR (Lee clock)", y = "Count (n = 200)")+
 theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.title.y= element_text(size=15))
@@ -2285,7 +2252,7 @@ dev.off()
 
 **Cordblood**
 
-```r
+``` r
 EAARCord <- ggplot(Data_Cord_ITU, aes(x= Gestational_Age_Weeks, y= EAAR_Bohlin, label=Sample_Name))+
   geom_point() +geom_text(aes(label=Sample_Name),hjust=0, vjust=0)+
   xlab("gestational age at birth (weeks)")+
@@ -2310,23 +2277,21 @@ cowplot::plot_grid(EAARCord, EAARCord_sex, EAARCord_boxplot)
 length(na.omit(Data_Cord_ITU$EAAR_Bohlin))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/EAAR_descriptive/Cord.png",width=2200, height=1400, res=300)
 ggplot(Data_Cord_ITU, aes(x=EAAR_Bohlin))+ geom_histogram(binwidth=0.1)+ labs(x="EAAR (Bohlin clock)", y = "Count (n = 395)")+
 theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.title.y= element_text(size=15))
 dev.off()
 ```
 
-```r
+``` r
 deltaCord_boxplot <- ggplot(Data_Cord_ITU, aes(x=delta_Bohlin))+ geom_histogram(binwidth=0.1)+ labs(x="delta (Bohlin clock)", y = "Count (N = 395)")
 #deltaCord_boxplot
 ```
 
-
 **Placenta**
 
-```r
+``` r
 EAARPlacenta <- ggplot(Data_Placenta_ITU, aes(x= Gestational_Age_Weeks, y= EAAR_Lee, label=Sample_Name))+
   geom_point() +geom_text(aes(label=Sample_Name),hjust=0, vjust=0)+
   xlab("gestational age at birth (weeks)")+
@@ -2351,26 +2316,25 @@ cowplot::plot_grid(EAARPlacenta, EAARPlacenta_sex, EAARPlacenta_boxplot)
 length(na.omit(Data_Placenta_ITU$EAAR_Lee))
 ```
 
-
-```r
+``` r
 png("Results/Figures/EAAR_descriptive/Placenta.png", width=2200, height=1400, res=300)
 ggplot(Data_Placenta_ITU, aes(x=EAAR_Lee))+ geom_histogram(binwidth=0.1)+ labs(x="EAAR (Lee clock)", y = "Count (n = 439)")+
 theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.title.y= element_text(size=15))
 dev.off()
 ```
 
-```r
+``` r
 deltaPlacenta_boxplot <- ggplot(Data_Placenta_ITU, aes(x=delta_Lee))+ geom_histogram(binwidth=0.1)+ labs(x="delta (Lee clock)", y = "Count (N = 486)")
 deltaPlacenta_boxplot 
 ```
 
-[to the top](#top)  
+[to the top](#top)
 
-## PREDO: Visualization EAAR {#plotsEAARPREDO}  
+## PREDO: Visualization EAAR
 
 **450K Cordblood**
 
-```r
+``` r
 EAARCord450K <- ggplot(Data_PREDO_450Kcord, aes(x= Gestational_Age, y= EAAR_Bohlin, label=Sample_Name))+
   geom_point() +geom_text(aes(label=Sample_Name),hjust=0, vjust=0)+
   xlab("gestational age at birth (weeks)")+
@@ -2395,18 +2359,16 @@ EAARCord450K_boxplot <- ggplot(Data_PREDO_450Kcord, aes(x=EAAR_Bohlin))+ geom_hi
 length(na.omit(Data_PREDO_450Kcord$EAAR_Bohlin))
 ```
 
-
-```r
+``` r
 png("Results/Figures/EAAR_descriptive/Cord450K_PREDO.png", width=2200, height=1400, res=300)
 ggplot(Data_PREDO_450Kcord, aes(x=EAAR_Bohlin))+ geom_histogram(binwidth=0.1)+ labs(x="EAAR (Bohlin clock)", y = "Count (n = 785)")+
 theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.title.y= element_text(size=15))
 dev.off()
 ```
 
-
 **EPIC Cordblood**
 
-```r
+``` r
 EAARCordEPIC <- ggplot(Data_PREDO_EPICcord, aes(x= Gestational_Age, y= EAAR_Bohlin, label=Sample_Name))+
   geom_point() +geom_text(aes(label=Sample_Name),hjust=0, vjust=0)+
   xlab("gestational age at birth (weeks)")+
@@ -2431,8 +2393,7 @@ EAARCordEPIC_boxplot <- ggplot(Data_PREDO_EPICcord, aes(x=EAAR_Bohlin))+ geom_hi
 length(na.omit(Data_PREDO_EPICcord$EAAR_Bohlin))
 ```
 
-
-```r
+``` r
 png("Results/Figures/EAAR_descriptive/CordEPIC_PREDO.png", width=2200, height=1400, res=300)
 ggplot(Data_PREDO_EPICcord, aes(x=EAAR_Bohlin))+ geom_histogram(binwidth=0.1)+ labs(x="EAAR (Bohlin clock)", y = "Count (n = 146)")+
 theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.title.y= element_text(size=15))
@@ -2441,7 +2402,7 @@ dev.off()
 
 **EPIC Placenta**
 
-```r
+``` r
 EAARPlacentaEPIC <- ggplot(Data_PREDO_EPICplacenta, aes(x= Gestational_Age, y= EAAR_Lee, label=Sample_Name))+
   geom_point() +geom_text(aes(label=Sample_Name),hjust=0, vjust=0)+
   xlab("gestational age at birth (weeks)")+
@@ -2466,8 +2427,7 @@ EAARPlacentaEPIC_boxplot <- ggplot(Data_PREDO_EPICplacenta, aes(x=EAAR_Lee))+ ge
 length(na.omit(Data_PREDO_EPICplacenta$EAAR_Lee))
 ```
 
-
-```r
+``` r
 png("Results/Figures/EAAR_descriptive/PlacentaEPIC_PREDO.png", width=2200, height=1400, res=300)
 ggplot(Data_PREDO_EPICplacenta, aes(x=EAAR_Lee))+ geom_histogram(binwidth=0.1)+ labs(x="EAAR (Lee clock)", y = "Count (n = 118)")+
 theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.title.y= element_text(size=15))
@@ -2478,61 +2438,50 @@ dev.off()
 
 # Single Tissue Models
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "InputData/Data_ElasticNets/")), dir.create(file.path(getwd(), "InputData/Data_ElasticNets/")), FALSE)
 ```
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/")), dir.create(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/")), FALSE)
 ```
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_main/")), dir.create(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_main/")), FALSE)
 ```
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_add/")), dir.create(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_add/")), FALSE)
 ```
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol")), dir.create(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol")), FALSE)
 ```
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split")), dir.create(file.path(getwd(), "Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split")), FALSE)
 ```
 
-
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Tables/")), dir.create(file.path(getwd(), "Results/Tables/")), FALSE)
 ```
 
-
-```r
+``` r
 rm(list = setdiff(ls(), lsf.str()))
 ```
 
-
 **ITU**
 
-## Cord blood elastic net {#elasticnetCordITU}  
+## Cord blood elastic net
+
 main model, without alcohol variable
 
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Cord_ITU_EAAR_noNa_n.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_ITU_Cord_n <- matrix(Reg_Input_Data_Cord_ITU_EAAR_noNa_n$EAAR_Bohlin)
 xrc_mat_ITU_Cord_n <- model.matrix( ~ . - EAAR_Bohlin, data = Reg_Input_Data_Cord_ITU_EAAR_noNa_n)[, -1]
 yrc_mat_ITU_scaled_Cord_n <- scale(yrc_mat_ITU_Cord_n)
@@ -2540,39 +2489,48 @@ xrc_mat_ITU_scaled_Cord_n <- scale(xrc_mat_ITU_Cord_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Cord_ITU_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_ITU_scaled_Cord_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_ITU_scaled_Cord_n[rws, ], yrc_mat_ITU_scaled_Cord_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Cord_ITU_n, file="InputData/Data_ElasticNets/bootstraps_Cord_ITU_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Cord_ITU_n_1000.Rdata")
 ```
 
 first get a summary of all ensr objects
 
-```r
+``` r
 summaries_Cord_ITU_n <-
   bootstraps_Cord_ITU_n %>%
   lapply(summary) %>%
@@ -2581,11 +2539,15 @@ summaries_Cord_ITU_n <-
 summaries_Cord_ITU_n
 ```
 
-The summary method for ensr objects returns a data.table with values of λ, α, the mean cross-validation error cvm, and the number of non-zero coefficients. The l_index is the list index of the ensr object associated with the noted α value.
+The summary method for ensr objects returns a data.table with values of
+λ, α, the mean cross-validation error cvm, and the number of non-zero
+coefficients. The l\_index is the list index of the ensr object
+associated with the noted α value.
 
-For each bootstrap, look at the number of non-zero coefficients and the minimum cvm for this number of non-zero coefficients:
+For each bootstrap, look at the number of non-zero coefficients and the
+minimum cvm for this number of non-zero coefficients:
 
-```r
+``` r
 summaries_Cord_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -2595,10 +2557,12 @@ summaries_Cord_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.title.y= element_text(size=15))+
   ggplot2::theme_bw()
 ```
-in the "standard" procedure, the preferable model is defined as the model with the minimum cvm (nzero, alpha, lambda etc. are selected from this)
 
+in the “standard” procedure, the preferable model is defined as the
+model with the minimum cvm (nzero, alpha, lambda etc. are selected from
+this)
 
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstraps_Cord.png", width=2200, height=1400, res=400)
 summaries_Cord_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -2611,42 +2575,54 @@ summaries_Cord_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
 dev.off()
 ```
 
-Now a look at the coefficients
-build a data.table with columns to store the coefficient values for the models with smallest cvm by number of non-zero coefficients (and bootstrap).
+Now a look at the coefficients build a data.table with columns to store
+the coefficient values for the models with smallest cvm by number of
+non-zero coefficients (and bootstrap).
 
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Cord_ITU_n <- summaries_Cord_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Cord_ITU_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Cord_ITU_n), by = 1))) { -->
+
 <!--   pm2_Cord_ITU_n <- rbind(pm2_Cord_ITU_n, -->
+
 <!--                cbind(pm_Cord_ITU_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Cord_ITU_n[[pm_Cord_ITU_n[i, bootstrap]]][[pm_Cord_ITU_n[i, l_index]]], s = pm_Cord_ITU_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Cord_ITU_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Cord_ITU_n, file="InputData/Data_ElasticNets/pm2_Cord_ITU_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Cord_ITU_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-look how often a particular variable is associated with a non-zero coefficient in a model with a given number of non-zero coefficients (over all bootstraps)
+look how often a particular variable is associated with a non-zero
+coefficient in a model with a given number of non-zero coefficients
+(over all bootstraps)
 
-
-```r
+``` r
 csummary_Cord_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                list(pm2_Cord_ITU_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes"), by = nzero]
                                     ,
@@ -2657,11 +2633,11 @@ csummary_Cord_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"),
 csummary_Cord_ITU_n
 ```
 
+plot the results, in the following graphic the size and color of the
+points in the top plot indicate how often the variable is in the model
+with nzero non-zero coefficents
 
-plot the results, in the following graphic the size and color of the points in the top plot indicate how often the variable is in the model with nzero non-zero coefficents
-
-
-```r
+``` r
 g1_Cord_ITU_n <-
   csummary_Cord_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -2691,23 +2667,19 @@ g2_Cord_ITU_n <-
 gridExtra::grid.arrange(g1_Cord_ITU_n, g2_Cord_ITU_n, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstrapModels_Cord.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Cord_ITU_n, g2_Cord_ITU_n, ncol = 1)
 dev.off()
 ```
 
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/Model_Cord.png", width=2800, height=1400, res=400)
 g1_Cord_ITU_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_Cord_ITU_n$nzero, csummary_Cord_ITU_n$median_cvm)
 
 nzero_indices_Cord <- data.frame(t(elbow_finder(csummary_Cord_ITU_n$nzero, csummary_Cord_ITU_n$median_cvm)))
@@ -2715,18 +2687,17 @@ colnames(nzero_indices_Cord) <- c("x", "y")
 rownames(nzero_indices_Cord) <- NULL
 ```
 
-```r
+``` r
 nzero_final_cord_itu <- 9
 ```
 
 look at models with 9 non-zero coefficient.
 
-```r
+``` r
 csummary_Cord_ITU_n[nzero %in% nzero_final_cord_itu]
 ```
 
-
-```r
+``` r
 nonzero_choose_Cord <- ggplot2::ggplot(csummary_Cord_ITU_n) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -2741,17 +2712,16 @@ nonzero_choose_Cord <- ggplot2::ggplot(csummary_Cord_ITU_n) +
 nonzero_choose_Cord
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/nzero_choose_Cord.png", width=2200, height=1400, res=400)
 nonzero_choose_Cord
 dev.off()
 ```
-look at models with 9 non-zero coefficients.
-filter for cut-off 75% -> which variables occur in more than 75% of models.
 
+look at models with 9 non-zero coefficients. filter for cut-off 75% -\>
+which variables occur in more than 75% of models.
 
-```r
+``` r
 summary_Cord_ITU_n_finalnzero <- csummary_Cord_ITU_n[nzero %in% nzero_final_cord_itu]
 sig_var_names_Cord_ITU_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Cord_ITU_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Cord_ITU_n_finalnzero) <- c("non-zero", "child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -2764,8 +2734,7 @@ summary_Cord_ITU_n_finalnzeroT <- summary_Cord_ITU_n_finalnzeroT[order(summary_C
 summary_Cord_ITU_n_finalnzeroT$number <- seq(1, length(summary_Cord_ITU_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Cord_ITU_n <- 
   ggplot(summary_Cord_ITU_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -2784,18 +2753,17 @@ perc_vars_Cord_ITU_n
 Filter(function(x) any(x > 0.75), summary_Cord_ITU_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/varsPercent_Cord.png", width=2900, height=1400, res=400)
 perc_vars_Cord_ITU_n
 dev.off()
 ```
 
-A metric of interest could be the width of the confidence intervals about a bootstrapped estimate of the coefficient, when the coefficient is non-zero:
-  
+A metric of interest could be the width of the confidence intervals
+about a bootstrapped estimate of the coefficient, when the coefficient
+is non-zero:
 
-```r
+``` r
 pm2_Cord_ITU_n_coef <-
   dcast(pm2_Cord_ITU_n[,
                        as.list(unlist(
@@ -2844,14 +2812,11 @@ pm2_Cord_ITU_n_datable <- dcast(pm2_Cord_ITU_n[,
 pm2_Cord_ITU_n_datable
 ```
 
-
-```r
+``` r
 write_xlsx(pm2_Cord_ITU_n_coef,"Results/Tables/CoefficientsModel_Cord.xlsx")
 ```
 
-
-
-```r
+``` r
 sig_vars_Cord_ITU_n <-
   pm2_Cord_ITU_n_coef %>%
   ggplot2::ggplot(.) +
@@ -2867,8 +2832,7 @@ sig_vars_Cord_ITU_n <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 9", color="%")
 ```
 
-
-```r
+``` r
 coef_Cord_ITU_n <- 
   ggplot(pm2_Cord_ITU_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -2888,17 +2852,13 @@ coef_Cord_ITU_n <-
 coef_Cord_ITU_n 
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/coef_Cord.png", width=2800, height=1400, res=400)
 coef_Cord_ITU_n 
 dev.off()
 ```
 
-
-
-```r
+``` r
 p1 <-
   csummary_Cord_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -2940,11 +2900,9 @@ grid.draw(g)
 dev.off()
 ```
 
-
 get the beta values
 
-
-```r
+``` r
 ### Code for only including "significant variables" in the beta vector, based on VIP (>75% not-zero in bootstraps)
 
 # get median beta values of the 1000 bootstraps for the model with 9 non-zero coefficients
@@ -2956,24 +2914,22 @@ rownames(Beta_hat_s_cord_n) <- c("Intercept", sig_var_names_Cord_ITU_n_finalnzer
 Beta_Cord_ITU_n <- Beta_hat_s_cord_n
 ```
 
-
-```r
+``` r
 save(Beta_Cord_ITU_n, file="InputData/Data_ElasticNets/Beta_Cord_ITU_n.Rdata")
 ```
 
 [to the top](#top)
 
-## Cord blood elastic net {#elasticnetCordITU_a}  
+## Cord blood elastic net
+
 additional model, with alcohol variable
 
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Cord_ITU_EAAR_noNa_wa.Rdata")
 ```
 
-
-```r
+``` r
 yrc_mat_ITU_Cord_wa <- matrix(Reg_Input_Data_Cord_ITU_EAAR_noNa_wa$EAAR_Bohlin)
 xrc_mat_ITU_Cord_wa <- model.matrix( ~ . - EAAR_Bohlin, data = Reg_Input_Data_Cord_ITU_EAAR_noNa_wa)[, -1]
 yrc_mat_ITU_scaled_Cord_wa <- scale(yrc_mat_ITU_Cord_wa)
@@ -2981,38 +2937,46 @@ xrc_mat_ITU_scaled_Cord_wa <- scale(xrc_mat_ITU_Cord_wa)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Cord_ITU_wa <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_ITU_scaled_Cord_wa), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_ITU_scaled_Cord_wa[rws, ], yrc_mat_ITU_scaled_Cord_wa[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Cord_ITU_wa, file="InputData/Data_ElasticNets/bootstraps_Cord_ITU_wa_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Cord_ITU_wa_1000.Rdata")
 ```
 
-
-```r
+``` r
 summaries_Cord_ITU_wa <-
   bootstraps_Cord_ITU_wa %>%
   lapply(summary) %>%
@@ -3021,8 +2985,7 @@ summaries_Cord_ITU_wa <-
 summaries_Cord_ITU_wa
 ```
 
-
-```r
+``` r
 summaries_Cord_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -3030,8 +2993,7 @@ summaries_Cord_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::geom_line()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/bootstraps_Cord.png", width=800, height=600)
 summaries_Cord_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -3041,38 +3003,46 @@ summaries_Cord_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Cord_ITU_wa <- summaries_Cord_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Cord_ITU_wa <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Cord_ITU_wa), by = 1))) { -->
+
 <!--   pm2_Cord_ITU_wa <- rbind(pm2_Cord_ITU_wa, -->
+
 <!--                cbind(pm_Cord_ITU_wa[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Cord_ITU_wa[[pm_Cord_ITU_wa[i, bootstrap]]][[pm_Cord_ITU_wa[i, l_index]]], s = pm_Cord_ITU_wa[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Cord_ITU_wa -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Cord_ITU_wa, file="InputData/Data_ElasticNets/pm2_Cord_ITU_wa.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Cord_ITU_wa.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-```r
+``` r
 csummary_Cord_ITU_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                list(pm2_Cord_ITU_wa[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes", "maternal_alcohol_useyes"), by = nzero]
                                     ,
@@ -3083,9 +3053,7 @@ csummary_Cord_ITU_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"),
 csummary_Cord_ITU_wa
 ```
 
-
-
-```r
+``` r
 g1_Cord_ITU_wa <-
   csummary_Cord_ITU_wa %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -3114,23 +3082,19 @@ g2_Cord_ITU_wa <-
 gridExtra::grid.arrange(g1_Cord_ITU_wa, g2_Cord_ITU_wa, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/bootstrapModels_Cord.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Cord_ITU_wa, g2_Cord_ITU_wa, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/Model_Cord.png", width=2800, height=1400, res=400)
 g1_Cord_ITU_wa
 dev.off()
 ```
 
-
-```r
+``` r
 elbow_finder(csummary_Cord_ITU_wa$nzero, csummary_Cord_ITU_wa$median_cvm)
 
 nzero_indices_Cord <- data.frame(t(elbow_finder(csummary_Cord_ITU_wa$nzero, csummary_Cord_ITU_wa$median_cvm)))
@@ -3138,18 +3102,17 @@ colnames(nzero_indices_Cord) <- c("x", "y")
 rownames(nzero_indices_Cord) <- NULL
 ```
 
-```r
+``` r
 nzero_final_cord_wa <- 7
 ```
 
 look at models with final non-zero coefficient.
 
-```r
+``` r
 csummary_Cord_ITU_wa[nzero %in% nzero_final_cord_wa]
 ```
 
-
-```r
+``` r
 nonzero_choose_Cord <- ggplot2::ggplot(csummary_Cord_ITU_wa) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -3163,15 +3126,13 @@ nonzero_choose_Cord <- ggplot2::ggplot(csummary_Cord_ITU_wa) +
 nonzero_choose_Cord
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/nzero_choose_Cord.png", width=1600, height=1400, res=300)
 nonzero_choose_Cord
 dev.off()
 ```
 
-
-```r
+``` r
 summary_Cord_ITU_wa_finalnzero <- csummary_Cord_ITU_wa[nzero %in% nzero_final_cord_wa]
 sig_var_names_Cord_ITU_wa_finalnzero <- Filter(function(x) any(x > 0.75), summary_Cord_ITU_wa_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Cord_ITU_wa_finalnzero) <- c("non-zero", "child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "maternal alcohol use (yes)", "mean cvm", "median cvm")
@@ -3184,8 +3145,7 @@ summary_Cord_ITU_wa_finalzeroT <- summary_Cord_ITU_wa_finalnzeroT[order(summary_
 summary_Cord_ITU_wa_finalnzeroT$number <- seq(1, length(summary_Cord_ITU_wa_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Cord_ITU_wa <- 
   ggplot(summary_Cord_ITU_wa_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -3203,16 +3163,13 @@ perc_vars_Cord_ITU_wa
 Filter(function(x) any(x > 0.75), summary_Cord_ITU_wa_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/varsPercent_Cord.png", width=1100, height=1400, res=300)
 perc_vars_Cord_ITU_wa
 dev.off()
 ```
 
-  
-
-```r
+``` r
 pm2_Cord_ITU_wa_coef <-
   dcast(pm2_Cord_ITU_wa[,
                        as.list(unlist(
@@ -3261,8 +3218,7 @@ pm2_Cord_ITU_wa_datable <- dcast(pm2_Cord_ITU_wa[,
 pm2_Cord_ITU_wa_datable
 ```
 
-
-```r
+``` r
 sig_vars_Cord_ITU_wa <-
   pm2_Cord_ITU_wa_coef %>%
   ggplot2::ggplot(.) +
@@ -3278,8 +3234,7 @@ sig_vars_Cord_ITU_wa <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 8", color="%")
 ```
 
-
-```r
+``` r
 coef_Cord_ITU_wa <- 
   ggplot(pm2_Cord_ITU_wa_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -3299,17 +3254,13 @@ coef_Cord_ITU_wa <-
 coef_Cord_ITU_wa 
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/coef_Cord.png", width=2800, height=1400, res=400)
 coef_Cord_ITU_wa 
 dev.off()
 ```
 
-
-
-```r
+``` r
 p1 <-
   csummary_Cord_ITU_wa %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -3353,8 +3304,7 @@ dev.off()
 
 get the beta values
 
-
-```r
+``` r
 ### Code for only including "significant variables" in the beta vector, based on VIP (>75% not-zero in bootstraps)
 
 # get median beta values of the 1000 bootstraps for the model with 7 non-zero coefficients
@@ -3366,65 +3316,61 @@ rownames(Beta_hat_s_cord_wa) <- c("Intercept", sig_var_names_Cord_ITU_wa_finalnz
 Beta_Cord_ITU_wa <- Beta_hat_s_cord_wa
 ```
 
-
-```r
+``` r
 save(Beta_Cord_ITU_wa, file="InputData/Data_ElasticNets/Beta_Cord_ITU_wa.Rdata")
 ```
 
 [to the top](#top)
 
+## CVS elastic net
 
-## CVS elastic net {#elasticnetCVSITU}  
 main model, without alcohol variable
 
-
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_CVS_ITU_EAAR_n_noNa.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_ITU_CVS_n <- matrix(Reg_Input_Data_CVS_ITU_EAAR_n_noNa$EAAR_Lee)
 xrc_mat_ITU_CVS_n <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_CVS_ITU_EAAR_n_noNa)[, -1]
 yrc_mat_ITU_scaled_CVS_n <- scale(yrc_mat_ITU_CVS_n)
 xrc_mat_ITU_scaled_CVS_n <- scale(xrc_mat_ITU_CVS_n)
 ```
 
-
 <!-- set seed -->
 
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- nboot = 1000 -->
 
 <!-- bootstraps_CVS_ITU_n <- replicate(nboot,{ -->
+
 <!--   rws <- sample(1:nrow(xrc_mat_ITU_scaled_CVS_n), replace = TRUE); -->
+
 <!--   ensr(xrc_mat_ITU_scaled_CVS_n[rws, ], yrc_mat_ITU_scaled_CVS_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100,nfolds=10,alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0))}, simplify = FALSE) -->
 
 <!-- ``` -->
 
-
 <!-- ```{r} -->
+
 <!-- # save bootstrap object -->
+
 <!-- save(bootstraps_CVS_ITU_n, file="InputData/Data_ElasticNets/bootstraps_CVS_ITU_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_CVS_ITU_n_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_CVS_ITU_n <-
   bootstraps_CVS_ITU_n %>%
   lapply(summary) %>%
@@ -3433,9 +3379,7 @@ summaries_CVS_ITU_n <-
 summaries_CVS_ITU_n
 ```
 
-
-
-```r
+``` r
 summaries_CVS_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -3443,9 +3387,7 @@ summaries_CVS_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstraps_CVS.png", width=800, height=600)
 summaries_CVS_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -3455,39 +3397,45 @@ summaries_CVS_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_CVS_ITU_n <- summaries_CVS_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_CVS_ITU_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_CVS_ITU_n), by = 1))) { -->
+
 <!--   pm2_CVS_ITU_n <- rbind(pm2_CVS_ITU_n, -->
+
 <!--                cbind(pm_CVS_ITU_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_CVS_ITU_n[[pm_CVS_ITU_n[i, bootstrap]]][[pm_CVS_ITU_n[i, l_index]]], s = pm_CVS_ITU_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_CVS_ITU_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_CVS_ITU_n, file="InputData/Data_ElasticNets/pm2_CVS_ITU_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_CVS_ITU_n.Rdata")
 ```
 
-
-
-```r
+``` r
 csummary_CVS_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                               list(pm2_CVS_ITU_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Gestational_Age_Weeks", "Child_Sexfemale", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes"), by = nzero]
                                    ,
@@ -3498,9 +3446,7 @@ csummary_CVS_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"),
 csummary_CVS_ITU_n
 ```
 
-
-
-```r
+``` r
 g1_CVS_ITU_n <-
   csummary_CVS_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -3532,34 +3478,30 @@ gridExtra::grid.arrange(g1_CVS_ITU_n, g2_CVS_ITU_n, ncol = 1)
 # note: not a big difference if mean/median cvm is used
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstrapModels_CVS.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_CVS_ITU_n, g2_CVS_ITU_n, ncol = 1)
 dev.off()
 ```
 
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/Model_CVS.png", width=2800, height=1400, res=400)
 g1_CVS_ITU_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_CVS_ITU_n$nzero[-1], csummary_CVS_ITU_n$median_cvm[-1])
 nzero_indices_CVS <- data.frame(t(elbow_finder(csummary_CVS_ITU_n$nzero[-1], csummary_CVS_ITU_n$median_cvm[-1])))
 colnames(nzero_indices_CVS) <- c("x", "y")
 rownames(nzero_indices_CVS) <- NULL
 ```
 
-```r
+``` r
 nzero_final_CVS <- 8
 ```
 
-
-```r
+``` r
 nonzero_choose_CVS <- ggplot2::ggplot(csummary_CVS_ITU_n) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -3573,15 +3515,13 @@ nonzero_choose_CVS <- ggplot2::ggplot(csummary_CVS_ITU_n) +
 nonzero_choose_CVS
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/nzero_choose_CVS.png", width=1600, height=1400, res=300)
 nonzero_choose_CVS
 dev.off()
 ```
 
-
-```r
+``` r
 summary_CVS_ITU_n_finalnzero <- csummary_CVS_ITU_n[nzero %in% nzero_final_CVS]
 sig_var_names_CVS_ITU_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_CVS_ITU_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_CVS_ITU_n_finalnzero) <- c("non-zero", "gestage at birth", "child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -3594,9 +3534,7 @@ summary_CVS_ITU_n_finalnzeroT <- summary_CVS_ITU_n_finalnzeroT[order(summary_CVS
 summary_CVS_ITU_n_finalnzeroT$number <- seq(1, length(summary_CVS_ITU_n_finalnzeroT$variable))
 ```
 
-
-
-```r
+``` r
 perc_vars_CVS_ITU_n <- 
 ggplot(summary_CVS_ITU_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
 geom_point()+ geom_line()+
@@ -3614,16 +3552,13 @@ perc_vars_CVS_ITU_n
 Filter(function(x) any(x > 0.75), summary_CVS_ITU_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/varsPercent_CVS.png", width=1800, height=1400, res=300)
 perc_vars_CVS_ITU_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 pm2_CVS_ITU_n_coef <-
 dcast(pm2_CVS_ITU_n[,
 as.list(unlist(
@@ -3649,13 +3584,11 @@ pm2_CVS_ITU_n_coef[match(c("Gestational_Age_Weeks", "Child_Sexfemale", "Child_Bi
 pm2_CVS_ITU_n_coef$variable <- factor(pm2_CVS_ITU_n_coef$variabl, levels=unique(pm2_CVS_ITU_n_coef$variable))
 ```
 
-
-```r
+``` r
 write_xlsx(pm2_CVS_ITU_n_coef,"Results/Tables/CoefficientsModel_CVS.xlsx")
 ```
 
-
-```r
+``` r
 sig_vars_CVS_ITU_n <-
 pm2_CVS_ITU_n_coef %>%
   ggplot2::ggplot(.) +
@@ -3671,8 +3604,7 @@ pm2_CVS_ITU_n_coef %>%
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 9", color="%")
 ```
 
-
-```r
+``` r
 coef_CVS_ITU_n <- 
 ggplot(pm2_CVS_ITU_n_coef, aes(y = variable, x=median))+
 geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -3692,16 +3624,13 @@ theme(text = element_text(size = 15), axis.title.x= element_text(size=15), axis.
 coef_CVS_ITU_n 
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/coef_CVS.png", width=2800, height=1400, res=400)
 coef_CVS_ITU_n 
 dev.off()
 ```
 
-
-```r
+``` r
 g1_CVS_ITU_n <-
   csummary_CVS_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -3737,7 +3666,7 @@ theme(text = element_text(size = 20), axis.title.x= element_text(size=15), axis.
 
 Plot:
 
-```r
+``` r
 p1 <-
   csummary_CVS_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -3781,65 +3710,73 @@ dev.off()
 
 [to the top](#top)
 
-## CVS elastic net {#elasticnetCVSITU_a}  
+## CVS elastic net
+
 additional model, with alcohol variable
 
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_CVS_ITU_EAAR_wa_noNa.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_ITU_CVS_wa <- matrix(Reg_Input_Data_CVS_ITU_EAAR_wa_noNa$EAAR_Lee)
 xrc_mat_ITU_CVS_wa <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_CVS_ITU_EAAR_wa_noNa)[, -1]
 yrc_mat_ITU_scaled_CVS_wa <- scale(yrc_mat_ITU_CVS_wa)
 xrc_mat_ITU_scaled_CVS_wa <- scale(xrc_mat_ITU_CVS_wa)
 ```
 
-
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- nboot = 1000 -->
 
 <!-- start_time <- Sys.time() -->
+
 <!-- bootstraps_CVS_ITU_wa <- replicate(nboot, { -->
+
 <!--   rws <- sample(1:nrow(xrc_mat_ITU_scaled_CVS_wa), replace = TRUE) -->
+
 <!--   ensr(xrc_mat_ITU_scaled_CVS_wa[rws, ], yrc_mat_ITU_scaled_CVS_wa[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!-- }, -->
+
 <!-- simplify = FALSE) -->
 
 <!-- end_time <- Sys.time() -->
+
 <!-- end_time - start_time -->
+
 <!-- # generates a list of length 100, each a unique call to ensr (= also a list of cv.glmnet objects, which is determined by the length of alphas) -->
+
 <!-- # nlambda = number of lambda values, default 100 -->
+
 <!-- # alpha: sequence of alphas to use, ensr will add length(alphas)-1 additional values (midpoints) in the construction of the alpha-lambda grid to search -->
+
 <!-- # nfold= number of folds (default 10) for internal cv to fit hyperparameters -->
 
 <!-- ``` -->
 
-
 <!-- ```{r} -->
+
 <!-- # save bootstrap object -->
+
 <!-- save(bootstraps_CVS_ITU_wa, file="InputData/Data_ElasticNets/bootstraps_CVS_ITU_wa_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_CVS_ITU_wa_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_CVS_ITU_wa <-
   bootstraps_CVS_ITU_wa %>%
   lapply(summary) %>%
@@ -3848,8 +3785,7 @@ summaries_CVS_ITU_wa <-
 summaries_CVS_ITU_wa
 ```
 
-
-```r
+``` r
 summaries_CVS_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -3857,9 +3793,7 @@ summaries_CVS_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/bootstraps_CVS.png", width=800, height=600)
 summaries_CVS_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -3869,38 +3803,45 @@ summaries_CVS_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_CVS_ITU_wa <- summaries_CVS_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_CVS_ITU_wa <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_CVS_ITU_wa), by = 1))) { -->
+
 <!--   pm2_CVS_ITU_wa <- rbind(pm2_CVS_ITU_wa, -->
+
 <!--                cbind(pm_CVS_ITU_wa[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_CVS_ITU_wa[[pm_CVS_ITU_wa[i, bootstrap]]][[pm_CVS_ITU_wa[i, l_index]]], s = pm_CVS_ITU_wa[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_CVS_ITU_wa -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_CVS_ITU_wa, file="InputData/Data_ElasticNets/pm2_CVS_ITU_wa.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_CVS_ITU_wa.Rdata")
 ```
 
-
-
-```r
+``` r
 csummary_CVS_ITU_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                               list(pm2_CVS_ITU_wa[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Gestational_Age_Weeks", "Child_Sexfemale", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes"
 , "maternal_alcohol_useyes"), by = nzero]
@@ -3912,9 +3853,7 @@ csummary_CVS_ITU_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"),
 csummary_CVS_ITU_wa
 ```
 
-
-
-```r
+``` r
 g1_CVS_ITU_wa <-
   csummary_CVS_ITU_wa %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -3946,32 +3885,26 @@ gridExtra::grid.arrange(g1_CVS_ITU_wa, g2_CVS_ITU_wa, ncol = 1)
 # note: not a big difference if mean/median cvm is used
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/Model_CVS.png", width=2800, height=1400, res=400)
 g1_CVS_ITU_wa
 dev.off()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/bootstrapModels_CVS.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_CVS_ITU_wa, g2_CVS_ITU_wa, ncol = 1)
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_CVS_ITU_wa$nzero, csummary_CVS_ITU_wa$median_cvm)
 nzero_indices_CVS <- data.frame(t(elbow_finder(csummary_CVS_ITU_wa$nzero, csummary_CVS_ITU_wa$median_cvm)))
 colnames(nzero_indices_CVS) <- c("x", "y")
 rownames(nzero_indices_CVS) <- NULL
 ```
 
-
-```r
+``` r
 nonzero_choose_CVS <- ggplot2::ggplot(csummary_CVS_ITU_wa) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -3985,27 +3918,21 @@ nonzero_choose_CVS <- ggplot2::ggplot(csummary_CVS_ITU_wa) +
 nonzero_choose_CVS
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/nzero_choose_CVS.png", width=1600, height=1400, res=300)
 nonzero_choose_CVS
 dev.off()
 ```
 
-
-```r
+``` r
 nzero_final_CVS_wa <- 10
 ```
 
-
-```r
+``` r
 csummary_CVS_ITU_wa[nzero %in% nzero_final_CVS_wa]
 ```
 
-
-
-```r
+``` r
 summary_CVS_ITU_wa_finalnzero <- csummary_CVS_ITU_wa[nzero %in% nzero_final_CVS_wa]
 sig_var_names_CVS_ITU_wa_finalnzero <- Filter(function(x) any(x > 0.75), summary_CVS_ITU_wa_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_CVS_ITU_wa_finalnzero) <- c("non-zero", "gestage at birth", "child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "maternal alcohol (yes)", "mean cvm", "median cvm")
@@ -4018,9 +3945,7 @@ summary_CVS_ITU_wa_finalnzeroT <- summary_CVS_ITU_wa_finalnzeroT[order(summary_C
 summary_CVS_ITU_wa_finalnzeroT$number <- seq(1, length(summary_CVS_ITU_wa_finalnzeroT$variable))
 ```
 
-
-
-```r
+``` r
 perc_vars_CVS_ITU_wa <- 
 ggplot(summary_CVS_ITU_wa_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
 geom_point()+ geom_line()+
@@ -4038,16 +3963,13 @@ perc_vars_CVS_ITU_wa
 Filter(function(x) any(x > 0.75), summary_CVS_ITU_wa_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/varsPercent_CVS.png", width=1100, height=1400, res=300)
 perc_vars_CVS_ITU_wa
 dev.off()
 ```
 
-
-
-```r
+``` r
 pm2_CVS_ITU_wa_coef <-
 dcast(pm2_CVS_ITU_wa[,
 as.list(unlist(
@@ -4096,8 +4018,7 @@ melt(id.var = "nzero") %>%
 pm2_CVS_ITU_wa_datable 
 ```
 
-
-```r
+``` r
 sig_vars_CVS_ITU_wa <-
 pm2_CVS_ITU_wa_coef %>%
   ggplot2::ggplot(.) +
@@ -4113,8 +4034,7 @@ pm2_CVS_ITU_wa_coef %>%
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 8", color="%")
 ```
 
-
-```r
+``` r
 coef_CVS_ITU_wa <- 
   ggplot(pm2_CVS_ITU_wa_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -4133,16 +4053,13 @@ coef_CVS_ITU_wa <-
 coef_CVS_ITU_wa
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/coef_CVS.png", width=2800, height=1400, res=400)
 coef_CVS_ITU_wa 
 dev.off()
 ```
 
-
-```r
+``` r
 p1 <-
   g1_CVS_ITU_wa <-
   csummary_CVS_ITU_wa %>%
@@ -4185,19 +4102,16 @@ grid.draw(g)
 dev.off()
 ```
 
+## Placenta elastic net
 
-## Placenta elastic net {#elasticnetPlacentaITU}  
 main model, without alcohol variable
 
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_ITU_EAAR_noNa_n.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_ITU_Placenta_n <- matrix(Reg_Input_Data_Placenta_ITU_EAAR_noNa_n$EAAR_Lee)
 xrc_mat_ITU_Placenta_n <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_ITU_EAAR_noNa_n)[, -1]
 yrc_mat_ITU_scaled_Placenta_n <- scale(yrc_mat_ITU_Placenta_n)
@@ -4205,22 +4119,31 @@ xrc_mat_ITU_scaled_Placenta_n <- scale(xrc_mat_ITU_Placenta_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Placenta_ITU_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_ITU_scaled_Placenta_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_ITU_scaled_Placenta_n[rws, ], yrc_mat_ITU_scaled_Placenta_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!--   #Time difference of 3.159319 hours -->
@@ -4228,18 +4151,16 @@ xrc_mat_ITU_scaled_Placenta_n <- scale(xrc_mat_ITU_Placenta_n)
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_ITU_n, file="InputData/Data_ElasticNets/bootstraps_Placenta_ITU_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_ITU_n_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_ITU_n <-
   bootstraps_Placenta_ITU_n %>%
   lapply(summary) %>%
@@ -4248,9 +4169,7 @@ summaries_Placenta_ITU_n <-
 summaries_Placenta_ITU_n
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -4258,9 +4177,7 @@ summaries_Placenta_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstraps_Placenta.png", width=800, height=600)
 summaries_Placenta_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -4270,39 +4187,46 @@ summaries_Placenta_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_ITU_n <- summaries_Placenta_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_ITU_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_ITU_n), by = 1))) { -->
+
 <!--   pm2_Placenta_ITU_n <- rbind(pm2_Placenta_ITU_n, -->
+
 <!--                cbind(pm_Placenta_ITU_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_ITU_n[[pm_Placenta_ITU_n[i, bootstrap]]][[pm_Placenta_ITU_n[i, l_index]]], s = pm_Placenta_ITU_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_ITU_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_ITU_n, file="InputData/Data_ElasticNets/pm2_Placenta_ITU_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_ITU_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                    list(pm2_Placenta_ITU_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes"), by = nzero]
                                         ,
@@ -4313,9 +4237,7 @@ csummary_Placenta_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"
 csummary_Placenta_ITU_n
 ```
 
-
-
-```r
+``` r
 g1_Placenta_ITU_n <-
   csummary_Placenta_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -4346,24 +4268,19 @@ g2_Placenta_ITU_n <-
 gridExtra::grid.arrange(g1_Placenta_ITU_n, g2_Placenta_ITU_n, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstrapModels_Placenta.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_ITU_n, g2_Placenta_ITU_n, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/Model_Placenta.png", width=2800, height=1400, res=400)
 g1_Placenta_ITU_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_Placenta_ITU_n$nzero, csummary_Placenta_ITU_n$median_cvm)
 
 nzero_indices_Placenta <- data.frame(t(elbow_finder(csummary_Placenta_ITU_n$nzero, csummary_Placenta_ITU_n$median_cvm)))
@@ -4371,15 +4288,11 @@ colnames(nzero_indices_Placenta) <- c("x", "y")
 rownames(nzero_indices_Placenta) <- NULL
 ```
 
-
-
-```r
+``` r
 nzero_final_placenta_itu <- 7
 ```
 
-
-
-```r
+``` r
 summary_Placenta_ITU_n_finalnzero <- csummary_Placenta_ITU_n[nzero %in% nzero_final_placenta_itu]
 sig_var_names_Placenta_ITU_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_ITU_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_ITU_n_finalnzero) <- c("non-zero","child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -4392,8 +4305,7 @@ summary_Placenta_ITU_n_finalnzeroT <- summary_Placenta_ITU_n_finalnzeroT[order(s
 summary_Placenta_ITU_n_finalnzeroT$number <- seq(1, length(summary_Placenta_ITU_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_ITU_n <- 
   ggplot(summary_Placenta_ITU_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -4411,15 +4323,13 @@ perc_vars_Placenta_ITU_n
 Filter(function(x) any(x > 0.75), summary_Placenta_ITU_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/varsPercent_Placenta.png", width=1800, height=1400, res=300)
 perc_vars_Placenta_ITU_n
 dev.off()
 ```
 
-```r
+``` r
 pm2_Placenta_ITU_n_coef <-
   dcast(pm2_Placenta_ITU_n[,
                         as.list(unlist(
@@ -4445,14 +4355,11 @@ pm2_Placenta_ITU_n_coef <-
 pm2_Placenta_ITU_n_coef$variable <- factor(pm2_Placenta_ITU_n_coef$variabl, levels=unique(pm2_Placenta_ITU_n_coef$variable))
 ```
 
-
-```r
+``` r
 write_xlsx(pm2_Placenta_ITU_n_coef,"Results/Tables/CoefficientsModel_Placenta.xlsx")
 ```
 
-
-
-```r
+``` r
 sig_vars_Placenta_ITU_n <-
   pm2_Placenta_ITU_n_coef %>%
   ggplot2::ggplot(.) +
@@ -4468,8 +4375,7 @@ sig_vars_Placenta_ITU_n <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 7", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_ITU_n <- 
   ggplot(pm2_Placenta_ITU_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -4489,16 +4395,13 @@ coef_Placenta_ITU_n <-
 coef_Placenta_ITU_n 
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/coef_Placenta.png", width=2800, height=1400, res=400)
 coef_Placenta_ITU_n
 dev.off()
 ```
 
-
-```r
+``` r
 p1 <-
   csummary_Placenta_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -4540,20 +4443,18 @@ grid.draw(g)
 dev.off()
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
-## Placenta elastic net {#elasticnetPlacentaITU_a}  
+## Placenta elastic net
+
 additional model, with alcohol variable
 
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_ITU_Placenta_wa <- matrix(Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa$EAAR_Lee)
 xrc_mat_ITU_Placenta_wa <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa)[, -1]
 yrc_mat_ITU_scaled_Placenta_wa <- scale(yrc_mat_ITU_Placenta_wa)
@@ -4561,22 +4462,31 @@ xrc_mat_ITU_scaled_Placenta_wa <- scale(xrc_mat_ITU_Placenta_wa)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Placenta_ITU_wa <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_ITU_scaled_Placenta_wa), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_ITU_scaled_Placenta_wa[rws, ], yrc_mat_ITU_scaled_Placenta_wa[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!--   #Time difference of 3.159319 hours -->
@@ -4584,19 +4494,16 @@ xrc_mat_ITU_scaled_Placenta_wa <- scale(xrc_mat_ITU_Placenta_wa)
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_ITU_wa, file="InputData/Data_ElasticNets/bootstraps_Placenta_ITU_wa_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_ITU_wa_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_ITU_wa <-
   bootstraps_Placenta_ITU_wa %>%
   lapply(summary) %>%
@@ -4605,9 +4512,7 @@ summaries_Placenta_ITU_wa <-
 summaries_Placenta_ITU_wa
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -4615,9 +4520,7 @@ summaries_Placenta_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] 
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/bootstraps_Placenta.png", width=800, height=600)
 summaries_Placenta_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -4627,39 +4530,46 @@ summaries_Placenta_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] 
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_ITU_wa <- summaries_Placenta_ITU_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_ITU_wa <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_ITU_wa), by = 1))) { -->
+
 <!--   pm2_Placenta_ITU_wa <- rbind(pm2_Placenta_ITU_wa, -->
+
 <!--                cbind(pm_Placenta_ITU_wa[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_ITU_wa[[pm_Placenta_ITU_wa[i, bootstrap]]][[pm_Placenta_ITU_wa[i, l_index]]], s = pm_Placenta_ITU_wa[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_ITU_wa -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_ITU_wa, file="InputData/Data_ElasticNets/pm2_Placenta_ITU_wa.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_ITU_wa.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_ITU_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                   list(pm2_Placenta_ITU_wa[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes", "maternal_alcohol_useyes"), by = nzero]
                                        ,
@@ -4670,9 +4580,7 @@ csummary_Placenta_ITU_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero
 csummary_Placenta_ITU_wa
 ```
 
-
-
-```r
+``` r
 g1_Placenta_ITU_wa <-
   csummary_Placenta_ITU_wa %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -4701,24 +4609,19 @@ g2_Placenta_ITU_wa <-
 gridExtra::grid.arrange(g1_Placenta_ITU_wa, g2_Placenta_ITU_wa, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/bootstrapModels_Placenta.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_ITU_wa, g2_Placenta_ITU_wa, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/Model_Placenta.png", width=2800, height=1400, res=400)
 g1_Placenta_ITU_wa
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_Placenta_ITU_wa$nzero, csummary_Placenta_ITU_wa$median_cvm)
 
 nzero_indices_Placenta <- data.frame(t(elbow_finder(csummary_Placenta_ITU_wa$nzero, csummary_Placenta_ITU_wa$median_cvm)))
@@ -4726,19 +4629,15 @@ colnames(nzero_indices_Placenta) <- c("x", "y")
 rownames(nzero_indices_Placenta) <- NULL
 ```
 
-
-```r
+``` r
 nzero_final_itu_placenta_wa <- 6
 ```
 
-
-```r
+``` r
 csummary_Placenta_ITU_wa[nzero %in% nzero_final_itu_placenta_wa]
 ```
 
-
-
-```r
+``` r
 nonzero_choose_Placenta <- ggplot2::ggplot(csummary_Placenta_ITU_wa) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -4752,16 +4651,13 @@ nonzero_choose_Placenta <- ggplot2::ggplot(csummary_Placenta_ITU_wa) +
 nonzero_choose_Placenta
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/nzero_choose_Placenta.png", width=1600, height=1400, res=300)
 nonzero_choose_Placenta
 dev.off()
 ```
 
-
-```r
+``` r
 summary_Placenta_ITU_wa_finalnzero <- csummary_Placenta_ITU_wa[nzero %in% nzero_final_itu_placenta_wa]
 sig_var_names_Placenta_ITU_wa_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_ITU_wa_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_ITU_wa_finalnzero) <- c("non-zero", "child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "maternal alcohol use (yes)", "mean cvm", "median cvm")
@@ -4774,8 +4670,7 @@ summary_Placenta_ITU_wa_finalzeroT <- summary_Placenta_ITU_wa_finalnzeroT[order(
 summary_Placenta_ITU_wa_finalnzeroT$number <- seq(1, length(summary_Placenta_ITU_wa_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_ITU_wa <- 
   ggplot(summary_Placenta_ITU_wa_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -4793,17 +4688,13 @@ perc_vars_Placenta_ITU_wa
 Filter(function(x) any(x > 0.75), summary_Placenta_ITU_wa_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/varsPercent_Placenta.png", width=1100, height=1400, res=300)
 perc_vars_Placenta_ITU_wa
 dev.off()
 ```
 
-
-  
-
-```r
+``` r
 pm2_Placenta_ITU_wa_coef <-
   dcast(pm2_Placenta_ITU_wa[,
                         as.list(unlist(
@@ -4829,8 +4720,7 @@ pm2_Placenta_ITU_wa_coef <-
 pm2_Placenta_ITU_wa_coef$variable <- factor(pm2_Placenta_ITU_wa_coef$variabl, levels=unique(pm2_Placenta_ITU_wa_coef$variable))
 ```
 
-
-```r
+``` r
 sig_vars_Placenta_ITU_wa <-
   pm2_Placenta_ITU_wa_coef %>%
   ggplot2::ggplot(.) +
@@ -4846,8 +4736,7 @@ sig_vars_Placenta_ITU_wa <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 7", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_ITU_wa <- 
   ggplot(pm2_Placenta_ITU_wa_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -4867,16 +4756,13 @@ coef_Placenta_ITU_wa <-
 coef_Placenta_ITU_wa 
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/coef_Placenta.png", width=2800, height=1400, res=400)
 coef_Placenta_ITU_wa
 dev.off()
 ```
 
-
-```r
+``` r
 p1 <-
    csummary_Placenta_ITU_wa %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -4920,21 +4806,19 @@ dev.off()
 
 [to the top](#top)
 
-## Placenta elastic net splitted by sex {#elasticnetPlacentaITU_s}  
+## Placenta elastic net splitted by sex
+
 model without alcohol variable, but splitted by sex
 
 ### males
-  
 
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_n.Rdata")
 Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_n$Child_Sex <- NULL
 ```
 
-
-
-```r
+``` r
 yrc_mat_ITU_Placenta_male_n <- matrix(Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_n$EAAR_Lee)
 xrc_mat_ITU_Placenta_male_n <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_male_ITU_EAAR_noNa_n)[, -1]
 yrc_mat_ITU_scaled_Placenta_male_n <- scale(yrc_mat_ITU_Placenta_male_n)
@@ -4942,36 +4826,42 @@ xrc_mat_ITU_scaled_Placenta_male_n <- scale(xrc_mat_ITU_Placenta_male_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Placenta_male_ITU_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_ITU_scaled_Placenta_male_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_ITU_scaled_Placenta_male_n[rws, ], yrc_mat_ITU_scaled_Placenta_male_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_male_ITU_n, file="InputData/Data_ElasticNets/bootstraps_Placenta_male_ITU_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_male_ITU_n_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_male_ITU_n <-
   bootstraps_Placenta_male_ITU_n %>%
   lapply(summary) %>%
@@ -4980,8 +4870,7 @@ summaries_Placenta_male_ITU_n <-
 summaries_Placenta_male_ITU_n
 ```
 
-
-```r
+``` r
 summaries_Placenta_male_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -4989,9 +4878,7 @@ summaries_Placenta_male_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstraps_Placenta_MALE.png", width=800, height=600)
 summaries_Placenta_male_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -5001,39 +4888,46 @@ summaries_Placenta_male_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_male_ITU_n <- summaries_Placenta_male_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_male_ITU_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_male_ITU_n), by = 1))) { -->
+
 <!--   pm2_Placenta_male_ITU_n <- rbind(pm2_Placenta_male_ITU_n, -->
+
 <!--                cbind(pm_Placenta_male_ITU_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_male_ITU_n[[pm_Placenta_male_ITU_n[i, bootstrap]]][[pm_Placenta_male_ITU_n[i, l_index]]], s = pm_Placenta_male_ITU_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_male_ITU_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_male_ITU_n, file="InputData/Data_ElasticNets/pm2_Placenta_male_ITU_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_male_ITU_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_male_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                               list(pm2_Placenta_male_ITU_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes"), by = nzero]
                                    ,
@@ -5044,9 +4938,7 @@ csummary_Placenta_male_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "n
 csummary_Placenta_male_ITU_n
 ```
 
-
-
-```r
+``` r
 g1_Placenta_male_ITU_n <-
   csummary_Placenta_male_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -5076,24 +4968,19 @@ g2_Placenta_male_ITU_n <-
 gridExtra::grid.arrange(g1_Placenta_male_ITU_n, g2_Placenta_male_ITU_n, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstrapModels_Placenta_male.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_male_ITU_n, g2_Placenta_male_ITU_n, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/Model_Placenta_male.png", width=2800, height=1400, res=400)
 g1_Placenta_male_ITU_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_Placenta_male_ITU_n$nzero[-13], csummary_Placenta_male_ITU_n$median_cvm[-13])
 
 nzero_indices_Cord <- data.frame(t(elbow_finder(csummary_Placenta_male_ITU_n$nzero[-13], csummary_Placenta_male_ITU_n$median_cvm[-13])))
@@ -5101,19 +4988,15 @@ colnames(nzero_indices_Cord) <- c("x", "y")
 rownames(nzero_indices_Cord) <- NULL
 ```
 
-```r
+``` r
 nzero_final_placenta_male <- 5
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_male_ITU_n[nzero %in% nzero_final_placenta_male]
 ```
 
-
-
-```r
+``` r
 summary_Placenta_male_ITU_n_finalnzero <- csummary_Placenta_male_ITU_n[nzero %in% nzero_final_placenta_male]
 sig_var_names_Placenta_male_ITU_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_male_ITU_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_male_ITU_n_finalnzero) <- c("non-zero", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -5126,8 +5009,7 @@ summary_Placenta_male_ITU_n_finalnzeroT <- summary_Placenta_male_ITU_n_finalnzer
 summary_Placenta_male_ITU_n_finalnzeroT$number <- seq(1, length(summary_Placenta_male_ITU_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_male_ITU_n <- 
   ggplot(summary_Placenta_male_ITU_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -5145,16 +5027,13 @@ perc_vars_Placenta_male_ITU_n
 Filter(function(x) any(x > 0.75), summary_Placenta_male_ITU_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/varsPercent_Placenta_male.png", width=1100, height=1400, res=300)
 perc_vars_Placenta_male_ITU_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 pm2_Placenta_male_ITU_n_coef <-
   dcast(pm2_Placenta_male_ITU_n[,
                        as.list(unlist(
@@ -5180,8 +5059,7 @@ pm2_Placenta_male_ITU_n_coef <-
 pm2_Placenta_male_ITU_n_coef$variable <- factor(pm2_Placenta_male_ITU_n_coef$variabl, levels=unique(pm2_Placenta_male_ITU_n_coef$variable))
 ```
 
-
-```r
+``` r
 sig_vars_Placenta_male_ITU_n <-
   pm2_Placenta_male_ITU_n_coef %>%
   ggplot2::ggplot(.) +
@@ -5197,8 +5075,7 @@ sig_vars_Placenta_male_ITU_n <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 2", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_male_ITU_n <- 
   ggplot(pm2_Placenta_male_ITU_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -5218,15 +5095,13 @@ coef_Placenta_male_ITU_n <-
 coef_Placenta_male_ITU_n
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/coef_Placenta_male.png", width=2800, height=1400, res=400)
 coef_Placenta_male_ITU_n
 dev.off()
 ```
 
-
-```r
+``` r
 p1 <-
   csummary_Placenta_male_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -5271,17 +5146,14 @@ dev.off()
 [to the top](#top)
 
 ### females
-  
 
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n.Rdata")
 Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n$Child_Sex <- NULL
 ```
 
-
-
-```r
+``` r
 yrc_mat_ITU_Placenta_female_n <- matrix(Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n$EAAR_Lee)
 xrc_mat_ITU_Placenta_female_n <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n)[, -1]
 yrc_mat_ITU_scaled_Placenta_female_n <- scale(yrc_mat_ITU_Placenta_female_n)
@@ -5289,39 +5161,46 @@ xrc_mat_ITU_scaled_Placenta_female_n <- scale(xrc_mat_ITU_Placenta_female_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Placenta_female_ITU_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_ITU_scaled_Placenta_female_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_ITU_scaled_Placenta_female_n[rws, ], yrc_mat_ITU_scaled_Placenta_female_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_female_ITU_n, file="InputData/Data_ElasticNets/bootstraps_Placenta_female_ITU_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_female_ITU_n_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_female_ITU_n <-
   bootstraps_Placenta_female_ITU_n %>%
   lapply(summary) %>%
@@ -5330,8 +5209,7 @@ summaries_Placenta_female_ITU_n <-
 summaries_Placenta_female_ITU_n
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstraps_Placenta_FEMALE.png", width=800, height=600)
 summaries_Placenta_female_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -5341,39 +5219,46 @@ summaries_Placenta_female_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nze
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_female_ITU_n <- summaries_Placenta_female_ITU_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_female_ITU_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_female_ITU_n), by = 1))) { -->
+
 <!--   pm2_Placenta_female_ITU_n <- rbind(pm2_Placenta_female_ITU_n, -->
+
 <!--                cbind(pm_Placenta_female_ITU_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_female_ITU_n[[pm_Placenta_female_ITU_n[i, bootstrap]]][[pm_Placenta_female_ITU_n[i, l_index]]], s = pm_Placenta_female_ITU_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_female_ITU_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_female_ITU_n, file="InputData/Data_ElasticNets/pm2_Placenta_female_ITU_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_female_ITU_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_female_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                        list(pm2_Placenta_female_ITU_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Birth_Weight", "Child_Birth_Length", "Child_Head_Circumference_At_Birth", "Delivery_mode_dichotomaided", "Induced_Labouryes", "Parity_dichotomgiven birth before", "Maternal_Age_Years", "Maternal_Body_Mass_Index_in_Early_Pregnancy", "Maternal_Hypertension_dichotomhypertension in current pregnancy", "Maternal_Diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_DisordersYes", "smoking_dichotomyes"), by = nzero]
                                             ,
@@ -5384,9 +5269,7 @@ csummary_Placenta_female_ITU_n <- Reduce(function(x,y) merge(x = x, y = y, by = 
 csummary_Placenta_female_ITU_n
 ```
 
-
-
-```r
+``` r
 g1_Placenta_female_ITU_n <-
   csummary_Placenta_female_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -5416,21 +5299,19 @@ g2_Placenta_female_ITU_n <-
 gridExtra::grid.arrange(g1_Placenta_female_ITU_n, g2_Placenta_female_ITU_n, ncol = 1)
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/Model_Placenta_female.png", width=2800, height=1400, res=400)
 g1_Placenta_female_ITU_n
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstrapModels_Placenta_female.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_female_ITU_n, g2_Placenta_female_ITU_n, ncol = 1)
 dev.off()
 ```
 
-```r
+``` r
 elbow_finder(csummary_Placenta_female_ITU_n$nzero, csummary_Placenta_female_ITU_n$median_cvm)
 
 nzero_indices_Cord <- data.frame(t(elbow_finder(csummary_Placenta_female_ITU_n$nzero, csummary_Placenta_female_ITU_n$median_cvm)))
@@ -5438,20 +5319,15 @@ colnames(nzero_indices_Cord) <- c("x", "y")
 rownames(nzero_indices_Cord) <- NULL
 ```
 
-
-```r
+``` r
 nzero_final_placenta_female <- 7
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_female_ITU_n[nzero %in% nzero_final_placenta_female]
 ```
 
-
-
-```r
+``` r
 nonzero_choose_Placenta_female <- ggplot2::ggplot(csummary_Placenta_female_ITU_n) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -5465,16 +5341,13 @@ nonzero_choose_Placenta_female <- ggplot2::ggplot(csummary_Placenta_female_ITU_n
 nonzero_choose_Placenta_female
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/nzero_choose_Placenta_female.png", width=1600, height=1400, res=300)
 nonzero_choose_Placenta_female
 dev.off()
 ```
 
-
-
-```r
+``` r
 summary_Placenta_female_ITU_n_finalnzero <- csummary_Placenta_female_ITU_n[nzero %in% nzero_final_placenta_female]
 sig_var_names_Placenta_female_ITU_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_female_ITU_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_female_ITU_n_finalnzero) <- c("non-zero", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -5487,8 +5360,7 @@ summary_Placenta_female_ITU_n_finalnzeroT <- summary_Placenta_female_ITU_n_final
 summary_Placenta_female_ITU_n_finalnzeroT$number <- seq(1, length(summary_Placenta_female_ITU_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_female_ITU_n <- 
   ggplot(summary_Placenta_female_ITU_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -5506,18 +5378,13 @@ perc_vars_Placenta_female_ITU_n
 Filter(function(x) any(x > 0.75), summary_Placenta_female_ITU_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/varsPercent_Placenta_female.png", width=1100, height=1400, res=300)
 perc_vars_Placenta_female_ITU_n
 dev.off()
 ```
 
-
-  
-
-```r
+``` r
 pm2_Placenta_female_ITU_n_coef <-
   dcast(pm2_Placenta_female_ITU_n[,
                                 as.list(unlist(
@@ -5543,9 +5410,7 @@ pm2_Placenta_female_ITU_n_coef <-
 pm2_Placenta_female_ITU_n_coef$variable <- factor(pm2_Placenta_female_ITU_n_coef$variabl, levels=unique(pm2_Placenta_female_ITU_n_coef$variable))
 ```
 
-
-
-```r
+``` r
 sig_vars_Placenta_female_ITU_n <-
   pm2_Placenta_female_ITU_n_coef %>%
   ggplot2::ggplot(.) +
@@ -5561,8 +5426,7 @@ sig_vars_Placenta_female_ITU_n <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 4", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_female_ITU_n <- 
   ggplot(pm2_Placenta_female_ITU_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -5582,15 +5446,13 @@ coef_Placenta_female_ITU_n <-
 coef_Placenta_female_ITU_n
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/coef_Placenta_female.png",  width=2800, height=1400, res=400)
 coef_Placenta_female_ITU_n
 dev.off()
 ```
 
-
-```r
+``` r
 p1 <-
   csummary_Placenta_female_ITU_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -5637,18 +5499,14 @@ dev.off()
 
 **PREDO**
 
-## Placenta elastic net {#elasticnetPlacentaPREDO}  
+## Placenta elastic net
 
-
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_PREDO_Placenta_n <- matrix(Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n$EAAR_Lee)
 xrc_mat_PREDO_Placenta_n <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_PREDO_EAAR_noNa_n)[, -1]
 yrc_mat_PREDO_scaled_Placenta_n <- scale(yrc_mat_PREDO_Placenta_n)
@@ -5656,22 +5514,31 @@ xrc_mat_PREDO_scaled_Placenta_n <- scale(xrc_mat_PREDO_Placenta_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Placenta_PREDO_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_PREDO_scaled_Placenta_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_PREDO_scaled_Placenta_n[rws, ], yrc_mat_PREDO_scaled_Placenta_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!--   #Time difference of 3.159319 hours -->
@@ -5679,18 +5546,16 @@ xrc_mat_PREDO_scaled_Placenta_n <- scale(xrc_mat_PREDO_Placenta_n)
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_PREDO_n, file="InputData/Data_ElasticNets/bootstraps_Placenta_PREDO_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_PREDO_n_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_PREDO_n <-
   bootstraps_Placenta_PREDO_n %>%
   lapply(summary) %>%
@@ -5699,8 +5564,7 @@ summaries_Placenta_PREDO_n <-
 summaries_Placenta_PREDO_n
 ```
 
-
-```r
+``` r
 summaries_Placenta_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -5708,9 +5572,7 @@ summaries_Placenta_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")]
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstraps_Placenta_PREDO.png", width=800, height=600)
 summaries_Placenta_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -5720,40 +5582,46 @@ summaries_Placenta_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")]
 dev.off()
 ```
 
-
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_PREDO_n <- summaries_Placenta_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_PREDO_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_PREDO_n), by = 1))) { -->
+
 <!--   pm2_Placenta_PREDO_n <- rbind(pm2_Placenta_PREDO_n, -->
+
 <!--                cbind(pm_Placenta_PREDO_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_PREDO_n[[pm_Placenta_PREDO_n[i, bootstrap]]][[pm_Placenta_PREDO_n[i, l_index]]], s = pm_Placenta_PREDO_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_PREDO_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_PREDO_n, file="InputData/Data_ElasticNets/pm2_Placenta_PREDO_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_PREDO_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                      list(pm2_Placenta_PREDO_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth", "Delivery_Mode_dichotomaided", "inducedlabourYes", "Parity_dichotomgiven birth before", "Maternal_Age_18PopRegandBR", "Maternal_PrepregnancyBMI18oct28new", "maternal_hypertension_dichotomhypertension in current pregnancy","maternal_diabetes_dichotomdiabetes in current pregnancy","Maternal_Mental_Disorders_By_ChildbirthYes","smoking_dichotomyes"), by = nzero]
                                           ,
@@ -5764,9 +5632,7 @@ csummary_Placenta_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzer
 csummary_Placenta_PREDO_n
 ```
 
-
-
-```r
+``` r
 g1_Placenta_PREDO_n <-
   csummary_Placenta_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -5795,23 +5661,19 @@ g2_Placenta_PREDO_n <-
 gridExtra::grid.arrange(g1_Placenta_PREDO_n, g2_Placenta_PREDO_n, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstrapModels_Placenta_PREDO.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_PREDO_n, g2_Placenta_PREDO_n, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/Model_Placenta_PREDO.png", width=2800, height=1400, res=400)
 g1_Placenta_PREDO_n
 dev.off()
 ```
 
-
-```r
+``` r
 elbow_finder(csummary_Placenta_PREDO_n$nzero, csummary_Placenta_PREDO_n$median_cvm)
 
 nzero_indices_Placenta_PREDO <- data.frame(t(elbow_finder(csummary_Placenta_PREDO_n$nzero, csummary_Placenta_PREDO_n$median_cvm)))
@@ -5819,18 +5681,15 @@ colnames(nzero_indices_Placenta_PREDO) <- c("x", "y")
 rownames(nzero_indices_Placenta_PREDO) <- NULL
 ```
 
-```r
+``` r
 nzero_final_placenta_predo <- 6
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_PREDO_n[nzero %in% nzero_final_placenta_predo]
 ```
 
-
-```r
+``` r
 nonzero_choose_Placenta_PREDO <- ggplot2::ggplot(csummary_Placenta_PREDO_n) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -5844,15 +5703,13 @@ nonzero_choose_Placenta_PREDO <- ggplot2::ggplot(csummary_Placenta_PREDO_n) +
 nonzero_choose_Placenta_PREDO
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/nzero_choose_Placenta_PREDO.png", width=1600, height=1400, res=300)
 nonzero_choose_Placenta_PREDO
 dev.off()
 ```
 
-
-```r
+``` r
 summary_Placenta_PREDO_n_finalnzero <- csummary_Placenta_PREDO_n[nzero %in% nzero_final_placenta_predo]
 sig_var_names_Placenta_PREDO_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_PREDO_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_PREDO_n_finalnzero) <- c("non-zero","child sex", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -5865,8 +5722,7 @@ summary_Placenta_PREDO_n_finalnzeroT <- summary_Placenta_PREDO_n_finalnzeroT[ord
 summary_Placenta_PREDO_n_finalnzeroT$number <- seq(1, length(summary_Placenta_PREDO_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_PREDO_n <- 
   ggplot(summary_Placenta_PREDO_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -5884,16 +5740,13 @@ perc_vars_Placenta_PREDO_n
 Filter(function(x) any(x > 0.75), summary_Placenta_PREDO_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/varsPercent_Placenta_PREDO.png", width=1100, height=1400, res=400)
 perc_vars_Placenta_PREDO_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 pm2_Placenta_PREDO_n_coef <-
   dcast(pm2_Placenta_PREDO_n[,
                                 as.list(unlist(
@@ -5941,14 +5794,11 @@ pm2_Placenta_PREDO_n_datable <- dcast(pm2_Placenta_PREDO_n[,
 pm2_Placenta_PREDO_n_coef
 ```
 
-
-
-```r
+``` r
 write_xlsx(pm2_Placenta_PREDO_n_coef,"Results/Tables/CoefficientsModel_Placenta_PREDO.xlsx")
 ```
 
-
-```r
+``` r
 sig_vars_Placenta_PREDO_n <-
   pm2_Placenta_PREDO_n_coef %>%
   ggplot2::ggplot(.) +
@@ -5964,8 +5814,7 @@ sig_vars_Placenta_PREDO_n <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 5", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_PREDO_n <- 
   ggplot(pm2_Placenta_PREDO_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -5985,17 +5834,13 @@ coef_Placenta_PREDO_n <-
 coef_Placenta_PREDO_n
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/coef_Placenta_PREDO.png", width=2800, height=1400, res=400)
 coef_Placenta_PREDO_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 p1 <-
   csummary_Placenta_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -6039,17 +5884,14 @@ dev.off()
 
 [to the top](#top)
 
-## Placenta elastic net {#elasticnetPlacentaPREDO_a}  
+## Placenta elastic net
 
- 
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa.Rdata")
 ```
 
-
-```r
+``` r
 yrc_mat_PREDO_Placenta_wa <- matrix(Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa$EAAR_Lee)
 xrc_mat_PREDO_Placenta_wa <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_PREDO_EAAR_noNa_wa)[, -1]
 yrc_mat_PREDO_scaled_Placenta_wa <- scale(yrc_mat_PREDO_Placenta_wa)
@@ -6057,22 +5899,31 @@ xrc_mat_PREDO_scaled_Placenta_wa <- scale(xrc_mat_PREDO_Placenta_wa)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Placenta_PREDO_wa <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_PREDO_scaled_Placenta_wa), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_PREDO_scaled_Placenta_wa[rws, ], yrc_mat_PREDO_scaled_Placenta_wa[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!--   #Time difference of 3.159319 hours -->
@@ -6080,17 +5931,16 @@ xrc_mat_PREDO_scaled_Placenta_wa <- scale(xrc_mat_PREDO_Placenta_wa)
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_PREDO_wa, file="InputData/Data_ElasticNets/bootstraps_Placenta_PREDO_wa_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_PREDO_wa_1000.Rdata")
 ```
 
-
-```r
+``` r
 summaries_Placenta_PREDO_wa <-
   bootstraps_Placenta_PREDO_wa %>%
   lapply(summary) %>%
@@ -6099,8 +5949,7 @@ summaries_Placenta_PREDO_wa <-
 summaries_Placenta_PREDO_wa
 ```
 
-
-```r
+``` r
 summaries_Placenta_PREDO_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -6108,8 +5957,7 @@ summaries_Placenta_PREDO_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")
   ggplot2::geom_line()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/alcohol/bootstraps_Placenta_PREDO.png", width=800, height=600)
 summaries_Placenta_PREDO_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -6119,40 +5967,50 @@ summaries_Placenta_PREDO_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_PREDO_wa <- summaries_Placenta_PREDO_wa[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_PREDO_wa <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_PREDO_wa), by = 1))) { -->
+
 <!--   pm2_Placenta_PREDO_wa <- rbind(pm2_Placenta_PREDO_wa, -->
+
 <!--                cbind(pm_Placenta_PREDO_wa[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_PREDO_wa[[pm_Placenta_PREDO_wa[i, bootstrap]]][[pm_Placenta_PREDO_wa[i, l_index]]], s = pm_Placenta_PREDO_wa[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_PREDO_wa -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_PREDO_wa, file="InputData/Data_ElasticNets/pm2_Placenta_PREDO_wa.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_PREDO_wa.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-look how often a particular variable is associated with a non-zero coefficient in a model with a given number of non-zero coefficients (over all bootstraps)
+look how often a particular variable is associated with a non-zero
+coefficient in a model with a given number of non-zero coefficients
+(over all bootstraps)
 
-
-```r
+``` r
 csummary_Placenta_PREDO_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                        list(pm2_Placenta_PREDO_wa[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth", "Delivery_Mode_dichotomaided", "inducedlabourYes", "Parity_dichotomgiven birth before", "Maternal_Age_18PopRegandBR", "Maternal_PrepregnancyBMI18oct28new", "maternal_hypertension_dichotomhypertension in current pregnancy","maternal_diabetes_dichotomdiabetes in current pregnancy","Maternal_Mental_Disorders_By_ChildbirthYes","smoking_dichotomyes", "Alcohol_Use_In_Early_Pregnancy_19Octyes"), by = nzero]
                                             ,
@@ -6163,9 +6021,7 @@ csummary_Placenta_PREDO_wa <- Reduce(function(x,y) merge(x = x, y = y, by = "nze
 csummary_Placenta_PREDO_wa
 ```
 
-
-
-```r
+``` r
 g1_Placenta_PREDO_wa <-
   csummary_Placenta_PREDO_wa %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -6194,23 +6050,19 @@ g2_Placenta_PREDO_wa <-
 gridExtra::grid.arrange(g1_Placenta_PREDO_wa, g2_Placenta_PREDO_wa, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstrapModels_Placenta_PREDO.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_PREDO_wa, g2_Placenta_PREDO_wa, ncol = 1)
 dev.off()
 ```
 
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/Model_Placena_PREDO.png", width=2800, height=1400, res=400)
 g1_Placenta_PREDO_wa
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_Placenta_PREDO_wa$nzero, csummary_Placenta_PREDO_wa$median_cvm)
 
 nzero_indices_Placenta_PREDO_wa<- data.frame(t(elbow_finder(csummary_Placenta_PREDO_wa$nzero, csummary_Placenta_PREDO_wa$median_cvm)))
@@ -6220,18 +6072,15 @@ rownames(nzero_indices_Placenta_PREDO_wa) <- NULL
 
 look at models with 7 non-zero coefficient.
 
-
-```r
+``` r
 nzero_final_placenta_predo_wa <- 9
 ```
 
-
-```r
+``` r
 csummary_Placenta_PREDO_wa[nzero %in% nzero_final_placenta_predo_wa]
 ```
 
-
-```r
+``` r
 nonzero_choose_Placenta_PREDO_wa <- ggplot2::ggplot(csummary_Placenta_PREDO_wa) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -6245,16 +6094,13 @@ nonzero_choose_Placenta_PREDO_wa <- ggplot2::ggplot(csummary_Placenta_PREDO_wa) 
 nonzero_choose_Placenta_PREDO_wa
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/nzero_choose_Placenta_PREDO.png", width=1600, height=1400, res=300)
 nonzero_choose_Placenta_PREDO_wa
 dev.off()
 ```
 
-
-
-```r
+``` r
 summary_Placenta_PREDO_wa_finalnzero <- csummary_Placenta_PREDO_wa[nzero %in% nzero_final_placenta_predo_wa]
 sig_var_names_Placenta_PREDO_wa_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_PREDO_wa_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_PREDO_wa_finalnzero) <- c("non-zero", "child sex", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "maternal \alcohol use (yes)", "mean cvm", "median cvm")
@@ -6267,8 +6113,7 @@ summary_Placenta_PREDO_wa_finalnzeroT <- summary_Placenta_PREDO_wa_finalnzeroT[o
 summary_Placenta_PREDO_wa_finalnzeroT$number <- seq(1, length(summary_Placenta_PREDO_wa_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_PREDO_wa <- 
   ggplot(summary_Placenta_PREDO_wa_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -6286,17 +6131,13 @@ perc_vars_Placenta_PREDO_wa
 Filter(function(x) any(x > 0.75), summary_Placenta_PREDO_wa_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/varsPercent_Placenta_PREDO.png", width=1100, height=1400, res=300)
 perc_vars_Placenta_PREDO_wa
 dev.off()
 ```
 
-  
-
-```r
+``` r
 pm2_Placenta_PREDO_wa_coef <-
   dcast(pm2_Placenta_PREDO_wa[,
                                 as.list(unlist(
@@ -6343,9 +6184,7 @@ pm2_Placenta_PREDO_wa_datable <- dcast(pm2_Placenta_PREDO_wa[,
                                            .[nzero == nzero_final_placenta_predo_wa& variable %in% sig_var_names_Placenta_PREDO_wa_finalnzero], nzero+ variable ~ metric, value.var="value")
 ```
 
-
-
-```r
+``` r
 sig_vars_Placenta_PREDO_wa <-
   pm2_Placenta_PREDO_wa_coef %>%
   ggplot2::ggplot(.) +
@@ -6361,8 +6200,7 @@ sig_vars_Placenta_PREDO_wa <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 9", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_PREDO_wa <- 
   ggplot(pm2_Placenta_PREDO_wa_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -6382,16 +6220,13 @@ coef_Placenta_PREDO_wa <-
 coef_Placenta_PREDO_wa
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/coef_Placenta_PREDO.png", width=2800, height=1400, res=400)
 coef_Placenta_PREDO_wa
 dev.off()
 ```
 
-
-```r
+``` r
 p1 <-
   csummary_Placenta_PREDO_wa %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -6436,21 +6271,19 @@ dev.off()
 
 [to the top](#top)
 
-## Placenta elastic net splitted by sex {#elasticnetPlacentaPREDO_s}  
+## Placenta elastic net splitted by sex
+
 model without alcohol variable, but splitted by sex
 
 ### males
 
-
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_n.Rdata")
 Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_n$Child_Sex <- NULL
 ```
 
-
-
-```r
+``` r
 yrc_mat_PREDO_Placenta_male_n <- matrix(Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_n$EAAR_Lee)
 xrc_mat_PREDO_Placenta_male_n <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_male_PREDO_EAAR_noNa_n)[, -1]
 yrc_mat_PREDO_scaled_Placenta_male_n <- scale(yrc_mat_PREDO_Placenta_male_n)
@@ -6458,33 +6291,40 @@ xrc_mat_PREDO_scaled_Placenta_male_n <- scale(xrc_mat_PREDO_Placenta_male_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   bootstraps_Placenta_male_PREDO_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_PREDO_scaled_Placenta_male_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_PREDO_scaled_Placenta_male_n[rws, ], yrc_mat_PREDO_scaled_Placenta_male_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_male_PREDO_n, file="InputData/Data_ElasticNets/bootstraps_Placenta_male_PREDO_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_male_PREDO_n_1000.Rdata")
 ```
 
-
-```r
+``` r
 summaries_Placenta_male_PREDO_n <-
   bootstraps_Placenta_male_PREDO_n %>%
   lapply(summary) %>%
@@ -6493,9 +6333,7 @@ summaries_Placenta_male_PREDO_n <-
 summaries_Placenta_male_PREDO_n
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_male_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -6503,9 +6341,7 @@ summaries_Placenta_male_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nze
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstraps_Placenta_PREDO_MALE.png", width=800, height=600)
 summaries_Placenta_male_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -6515,39 +6351,46 @@ summaries_Placenta_male_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nze
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_male_PREDO_n <- summaries_Placenta_male_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_male_PREDO_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_male_PREDO_n), by = 1))) { -->
+
 <!--   pm2_Placenta_male_PREDO_n <- rbind(pm2_Placenta_male_PREDO_n, -->
+
 <!--                cbind(pm_Placenta_male_PREDO_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_male_PREDO_n[[pm_Placenta_male_PREDO_n[i, bootstrap]]][[pm_Placenta_male_PREDO_n[i, l_index]]], s = pm_Placenta_male_PREDO_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_male_PREDO_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_male_PREDO_n, file="InputData/Data_ElasticNets/pm2_Placenta_male_PREDO_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_male_PREDO_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_male_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                        list(pm2_Placenta_male_PREDO_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth", "Delivery_Mode_dichotomaided", "inducedlabourYes", "Parity_dichotomgiven birth before", "Maternal_Age_18PopRegandBR", "Maternal_PrepregnancyBMI18oct28new", "maternal_hypertension_dichotomhypertension in current pregnancy","maternal_diabetes_dichotomdiabetes in current pregnancy","Maternal_Mental_Disorders_By_ChildbirthYes","smoking_dichotomyes"), by = nzero]
                                             ,
@@ -6558,9 +6401,7 @@ csummary_Placenta_male_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = 
 csummary_Placenta_male_PREDO_n
 ```
 
-
-
-```r
+``` r
 g1_Placenta_male_PREDO_n <-
   csummary_Placenta_male_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -6590,23 +6431,19 @@ g2_Placenta_male_PREDO_n <-
 gridExtra::grid.arrange(g1_Placenta_male_PREDO_n, g2_Placenta_male_PREDO_n, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstrapModels_Placenta_PREDO_male.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_male_PREDO_n, g2_Placenta_male_PREDO_n, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/Model_Placenta_PREDO_male.png", width=2800, height=1400, res=400)
 g1_Placenta_male_PREDO_n
 dev.off()
 ```
 
-
-```r
+``` r
 elbow_finder(csummary_Placenta_male_PREDO_n$nzero, csummary_Placenta_male_PREDO_n$median_cvm)
 
 nzero_indices_Cord <- data.frame(t(elbow_finder(csummary_Placenta_male_PREDO_n$nzero, csummary_Placenta_male_PREDO_n$median_cvm)))
@@ -6614,18 +6451,15 @@ colnames(nzero_indices_Cord) <- c("x", "y")
 rownames(nzero_indices_Cord) <- NULL
 ```
 
-```r
+``` r
 nzero_final_placenta_male <- 5
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_male_PREDO_n[nzero %in% nzero_final_placenta_male]
 ```
 
-
-```r
+``` r
 nonzero_choose_Placenta_male <- ggplot2::ggplot(csummary_Placenta_male_PREDO_n) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -6639,16 +6473,13 @@ nonzero_choose_Placenta_male <- ggplot2::ggplot(csummary_Placenta_male_PREDO_n) 
 nonzero_choose_Placenta_male
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/nzero_choose_Placenta_PREDO_male.png", width=1600, height=1400, res=300)
 nonzero_choose_Placenta_male
 dev.off()
 ```
 
-
-
-```r
+``` r
 summary_Placenta_male_PREDO_n_finalnzero <- csummary_Placenta_male_PREDO_n[nzero %in% nzero_final_placenta_male]
 sig_var_names_Placenta_male_PREDO_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_male_PREDO_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_male_PREDO_n_finalnzero) <- c("non-zero", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -6661,8 +6492,7 @@ summary_Placenta_male_PREDO_n_finalnzeroT <- summary_Placenta_male_PREDO_n_final
 summary_Placenta_male_PREDO_n_finalnzeroT$number <- seq(1, length(summary_Placenta_male_PREDO_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_male_PREDO_n <- 
   ggplot(summary_Placenta_male_PREDO_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -6680,18 +6510,13 @@ perc_vars_Placenta_male_PREDO_n
 Filter(function(x) any(x > 0.75), summary_Placenta_male_PREDO_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/varsPercent_Placenta_male.png", width=1100, height=1400, res=300)
 perc_vars_Placenta_male_PREDO_n
 dev.off()
 ```
 
-
-  
-
-```r
+``` r
 pm2_Placenta_male_PREDO_n_coef <-
   dcast(pm2_Placenta_male_PREDO_n[,
                                 as.list(unlist(
@@ -6740,9 +6565,7 @@ pm2_Placenta_male_PREDO_n_datable <- dcast(pm2_Placenta_male_PREDO_n[,
 pm2_Placenta_male_PREDO_n_datable
 ```
 
-
-
-```r
+``` r
 sig_vars_Placenta_male_PREDO_n <-
   pm2_Placenta_male_PREDO_n_coef %>%
   ggplot2::ggplot(.) +
@@ -6758,8 +6581,7 @@ sig_vars_Placenta_male_PREDO_n <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 5", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_male_PREDO_n <- 
   ggplot(pm2_Placenta_male_PREDO_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -6779,17 +6601,13 @@ coef_Placenta_male_PREDO_n <-
 coef_Placenta_male_PREDO_n
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/coef_Placenta_PREDO_male.png", width=2800, height=1400, res=400)
 coef_Placenta_male_PREDO_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 p1 <-
   csummary_Placenta_male_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -6832,19 +6650,17 @@ grid.draw(g)
 dev.off()
 ```
 
-[to the top](#top)    
-    
+[to the top](#top)
+
 ### females
 
-```r
+``` r
 # in case you want to start from here
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_n.Rdata")
 Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_n$Child_Sex <- NULL
 ```
 
-
-
-```r
+``` r
 yrc_mat_PREDO_Placenta_female_n <- matrix(Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_n$EAAR_Lee)
 xrc_mat_PREDO_Placenta_female_n <- model.matrix( ~ . - EAAR_Lee, data = Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_n)[, -1]
 yrc_mat_PREDO_scaled_Placenta_female_n <- scale(yrc_mat_PREDO_Placenta_female_n)
@@ -6852,34 +6668,40 @@ xrc_mat_PREDO_scaled_Placenta_female_n <- scale(xrc_mat_PREDO_Placenta_female_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   bootstraps_Placenta_female_PREDO_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_PREDO_scaled_Placenta_female_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_PREDO_scaled_Placenta_female_n[rws, ], yrc_mat_PREDO_scaled_Placenta_female_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Placenta_female_PREDO_n, file="InputData/Data_ElasticNets/bootstraps_Placenta_female_PREDO_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Placenta_female_PREDO_n_1000.Rdata")
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_female_PREDO_n <-
   bootstraps_Placenta_female_PREDO_n %>%
   lapply(summary) %>%
@@ -6888,9 +6710,7 @@ summaries_Placenta_female_PREDO_n <-
 summaries_Placenta_female_PREDO_n
 ```
 
-
-
-```r
+``` r
 summaries_Placenta_female_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -6898,9 +6718,7 @@ summaries_Placenta_female_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "n
   ggplot2::geom_line()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstraps_Placenta_PREDO_female.png", width=800, height=600)
 summaries_Placenta_female_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -6910,40 +6728,46 @@ summaries_Placenta_female_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "n
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Placenta_female_PREDO_n <- summaries_Placenta_female_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Placenta_female_PREDO_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Placenta_female_PREDO_n), by = 1))) { -->
+
 <!--   pm2_Placenta_female_PREDO_n <- rbind(pm2_Placenta_female_PREDO_n, -->
+
 <!--                cbind(pm_Placenta_female_PREDO_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Placenta_female_PREDO_n[[pm_Placenta_female_PREDO_n[i, bootstrap]]][[pm_Placenta_female_PREDO_n[i, l_index]]], s = pm_Placenta_female_PREDO_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Placenta_female_PREDO_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Placenta_female_PREDO_n, file="InputData/Data_ElasticNets/pm2_Placenta_female_PREDO_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Placenta_female_PREDO_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-
-
-```r
+``` r
 csummary_Placenta_female_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                          list(pm2_Placenta_female_PREDO_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth", "Delivery_Mode_dichotomaided", "inducedlabourYes", "Parity_dichotomgiven birth before", "Maternal_Age_18PopRegandBR", "Maternal_PrepregnancyBMI18oct28new", "maternal_hypertension_dichotomhypertension in current pregnancy","maternal_diabetes_dichotomdiabetes in current pregnancy","Maternal_Mental_Disorders_By_ChildbirthYes","smoking_dichotomyes"), by = nzero]
                                               ,
@@ -6954,8 +6778,7 @@ csummary_Placenta_female_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by 
 csummary_Placenta_female_PREDO_n
 ```
 
-
-```r
+``` r
 g1_Placenta_female_PREDO_n <-
   csummary_Placenta_female_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -6984,24 +6807,19 @@ g2_Placenta_female_PREDO_n <-
 gridExtra::grid.arrange(g1_Placenta_female_PREDO_n, g2_Placenta_female_PREDO_n, ncol = 1)
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/bootstrapModels_Placenta_PREDO_female.png", width=2400, height=1800, res=300)
 gridExtra::grid.arrange(g1_Placenta_female_PREDO_n, g2_Placenta_female_PREDO_n, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/Model_Placenta_PREDO_female.png", width=2800, height=1400, res=400)
 g1_Placenta_female_PREDO_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_Placenta_female_PREDO_n$nzero, csummary_Placenta_female_PREDO_n$median_cvm)
 
 nzero_indices_Cord <- data.frame(t(elbow_finder(csummary_Placenta_female_PREDO_n$nzero, csummary_Placenta_female_PREDO_n$median_cvm)))
@@ -7009,18 +6827,15 @@ colnames(nzero_indices_Cord) <- c("x", "y")
 rownames(nzero_indices_Cord) <- NULL
 ```
 
-```r
+``` r
 nzero_final_placenta_female <- 6
 ```
 
-
-
-```r
+``` r
 csummary_Placenta_female_PREDO_n[nzero %in% nzero_final_placenta_female]
 ```
 
-
-```r
+``` r
 nonzero_choose_Placenta_female <- ggplot2::ggplot(csummary_Placenta_female_PREDO_n) +
   ggplot2::theme_bw()+
   ggplot2::aes(x = nzero, y = median_cvm) +
@@ -7034,17 +6849,13 @@ nonzero_choose_Placenta_female <- ggplot2::ggplot(csummary_Placenta_female_PREDO
 nonzero_choose_Placenta_female
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/nzero_choose_Placenta_PREDO_female.png", width=1600, height=1400, res=300)
 nonzero_choose_Placenta_female
 dev.off()
 ```
 
-
-
-
-```r
+``` r
 summary_Placenta_female_PREDO_n_finalnzero <- csummary_Placenta_female_PREDO_n[nzero %in% nzero_final_placenta_female]
 sig_var_names_Placenta_female_PREDO_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Placenta_female_PREDO_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Placenta_female_PREDO_n_finalnzero) <- c("non-zero", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -7057,8 +6868,7 @@ summary_Placenta_female_PREDO_n_finalnzeroT <- summary_Placenta_female_PREDO_n_f
 summary_Placenta_female_PREDO_n_finalnzeroT$number <- seq(1, length(summary_Placenta_female_PREDO_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Placenta_female_PREDO_n <- 
   ggplot(summary_Placenta_female_PREDO_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -7076,18 +6886,13 @@ perc_vars_Placenta_female_PREDO_n
 Filter(function(x) any(x > 0.75), summary_Placenta_female_PREDO_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/varsPercent_Placenta_female.png", width=1100, height=1400, res=300)
 perc_vars_Placenta_female_PREDO_n
 dev.off()
 ```
 
-
-  
-
-```r
+``` r
 pm2_Placenta_female_PREDO_n_coef <-
   dcast(pm2_Placenta_female_PREDO_n[,
                                   as.list(unlist(
@@ -7136,9 +6941,7 @@ pm2_Placenta_female_PREDO_n_datable <- dcast(pm2_Placenta_female_PREDO_n[,
 pm2_Placenta_female_PREDO_n_datable
 ```
 
-
-
-```r
+``` r
 sig_vars_Placenta_female_PREDO_n <-
   pm2_Placenta_female_PREDO_n_coef %>%
   ggplot2::ggplot(.) +
@@ -7154,8 +6957,7 @@ sig_vars_Placenta_female_PREDO_n <-
   ggplot2::labs(y="predictor", x = "number of non-zero coefficients = 6", color="%")
 ```
 
-
-```r
+``` r
 coef_Placenta_female_PREDO_n <- 
   ggplot(pm2_Placenta_female_PREDO_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -7175,16 +6977,13 @@ coef_Placenta_female_PREDO_n <-
 coef_Placenta_female_PREDO_n
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_add/sex_split/coef_Placenta_PREDO_female.png", width=2800, height=1400, res=400)
 coef_Placenta_female_PREDO_n
 dev.off()
 ```
 
-
-```r
+``` r
 p1 <-
   csummary_Placenta_female_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -7227,36 +7026,36 @@ grid.draw(g)
 dev.off()
 ```
 
-[to the top](#top)    
+[to the top](#top)
 
-## Prediction in PREDO cord blood {#predictionCordPREDO}  
+## Prediction in PREDO cord blood
 
-```r
+``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/predPREDO")), dir.create(file.path(getwd(), "Results/Figures/predPREDO")), FALSE)
 ```
 
 load PREDO data EPIC
 
-```r
+``` r
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n.Rdata")
 ```
 
 load PREDO data 450K
 
-```r
+``` r
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n.Rdata")
 ```
 
 load beta values from ITU
 
-```r
+``` r
 load("InputData/Data_ElasticNets/Beta_Cord_ITU_n.Rdata")
 Beta_Cord_ITU_n
 ```
 
 prepare PREDO data EPIC
 
-```r
+``` r
 y_mat_PREDO_Cord_pred <- matrix(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n$EAAR_Bohlin)
 
 Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_vars <- Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n[ ,c("Child_Sex", "Birth_Length", "Delivery_Mode_dichotom", "Maternal_Mental_Disorders_By_Childbirth", "smoking_dichotom")]
@@ -7272,7 +7071,7 @@ colnames(x_mat_PREDO_scaled_Cord_pred) <- c("Intercept", "child sex", "birth len
 
 prepare PREDO data 450K
 
-```r
+``` r
 y_mat_PREDO_Cord_predK <- matrix(Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n$EAAR_Bohlin)
 
 Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_varsK <- Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n[ ,c("Child_Sex", "Birth_Length", "Delivery_Mode_dichotom",  "Maternal_Mental_Disorders_By_Childbirth", "smoking_dichotom")]
@@ -7288,35 +7087,35 @@ colnames(x_mat_PREDO_scaled_Cord_predK) <- c("Intercept", "child sex", "birth le
 
 matrix multiplication EPIC
 
-```r
+``` r
 #Y=X*B
 y_pred_PREDO_cord <- x_mat_PREDO_scaled_Cord_pred %*% Beta_Cord_ITU_n
 ```
 
 matrix multiplication 450K
 
-```r
+``` r
 #Y=X*B
 y_pred_PREDO_cordK <- x_mat_PREDO_scaled_Cord_predK %*% Beta_Cord_ITU_n
 ```
 
 data EPIC
 
-```r
+``` r
 PREDO_cord_pred_exp_real <- data.frame(cbind(y_pred_PREDO_cord, y_mat_PREDO_scaled_Cord_pred))
 names(PREDO_cord_pred_exp_real) <- c("predicted_EAAR", "real_EAAR")
 ```
 
 data 450K
 
-```r
+``` r
 PREDO_cord_pred_exp_realK <- data.frame(cbind(y_pred_PREDO_cordK, y_mat_PREDO_scaled_Cord_predK))
 names(PREDO_cord_pred_exp_realK) <- c("predicted_EAAR", "real_EAAR")
 ```
 
 cor EPIC
 
-```r
+``` r
 cor.test(PREDO_cord_pred_exp_real$predicted_EAAR,PREDO_cord_pred_exp_real$real_EAAR, alternative="greater")
 # n = 144
 
@@ -7332,12 +7131,11 @@ plot_pred_real_epic <- ggscatter(PREDO_cord_pred_exp_real, x = "predicted_EAAR",
   scale_x_continuous(limits = c(-0.4,0.6), breaks = seq(-0.4,0.6, by=0.2))
 ```
 
-r(142) = .24, p=0.002
-n=144
+r(142) = .24, p=0.002 n=144
 
 cor 450K
 
-```r
+``` r
 cor.test(PREDO_cord_pred_exp_realK$predicted_EAAR,PREDO_cord_pred_exp_realK$real_EAAR, alternative="greater")
 
 plot_pred_real_450k <- ggscatter(PREDO_cord_pred_exp_realK, x = "predicted_EAAR", y = "real_EAAR", 
@@ -7353,16 +7151,13 @@ plot_pred_real_450k <- ggscatter(PREDO_cord_pred_exp_realK, x = "predicted_EAAR"
 # n = 796
 ```
 
-r(764) = .11, p=0.002
-n=766
+r(764) = .11, p=0.002 n=766
 
-
-```r
+``` r
 ggarrange(plot_pred_real_epic, plot_pred_real_450k, nrow=1)
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/predPREDO/predictionEAARcord.png", width= 3600, height=2100, res=480)
 ggarrange(plot_pred_real_epic, plot_pred_real_450k, nrow=1)
 dev.off()
@@ -7372,17 +7167,15 @@ ggarrange(plot_pred_real_epic, plot_pred_real_450k, nrow=1)
 dev.off()
 ```
 
-## elastic net PREDO EPIC Cord blood {#elasticnetCordPREDO}  
+## elastic net PREDO EPIC Cord blood
+
 main model, without alcohol
 
-
-```r
+``` r
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_PREDO_Cord_n <- matrix(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n$EAAR_Bohlin)
 xrc_mat_PREDO_Cord_n <- model.matrix( ~ . - EAAR_Bohlin, data = Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n)[, -1]
 yrc_mat_PREDO_scaled_Cord_n <- scale(yrc_mat_PREDO_Cord_n)
@@ -7390,39 +7183,48 @@ xrc_mat_PREDO_scaled_Cord_n <- scale(xrc_mat_PREDO_Cord_n)
 ```
 
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Cord_PREDO_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_PREDO_scaled_Cord_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_PREDO_scaled_Cord_n[rws, ], yrc_mat_PREDO_scaled_Cord_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Cord_PREDO_n, file="InputData/Data_ElasticNets/bootstraps_Cord_PREDO_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Cord_PREDO_n_1000.Rdata")
 ```
 
 first get a summary of all ensr objects
 
-```r
+``` r
 summaries_Cord_PREDO_n <-
   bootstraps_Cord_PREDO_n %>%
   lapply(summary) %>%
@@ -7431,9 +7233,7 @@ summaries_Cord_PREDO_n <-
 summaries_Cord_PREDO_n
 ```
 
-
-
-```r
+``` r
 summaries_Cord_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -7444,9 +7244,7 @@ summaries_Cord_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::theme_bw()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstraps_Cord_PREDO.png", width=2200, height=1400, res=300)
 summaries_Cord_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -7459,40 +7257,50 @@ summaries_Cord_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
 dev.off()
 ```
 
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Cord_PREDO_n <- summaries_Cord_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Cord_PREDO_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Cord_PREDO_n), by = 1))) { -->
+
 <!--   pm2_Cord_PREDO_n <- rbind(pm2_Cord_PREDO_n, -->
+
 <!--                cbind(pm_Cord_PREDO_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Cord_PREDO_n[[pm_Cord_PREDO_n[i, bootstrap]]][[pm_Cord_PREDO_n[i, l_index]]], s = pm_Cord_PREDO_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Cord_PREDO_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Cord_PREDO_n, file="InputData/Data_ElasticNets/pm2_Cord_PREDO_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Cord_PREDO_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-look how often a particular variable is associated with a non-zero coefficient in a model with a given number of non-zero coefficients (over all bootstraps)
+look how often a particular variable is associated with a non-zero
+coefficient in a model with a given number of non-zero coefficients
+(over all bootstraps)
 
-
-```r
+``` r
 csummary_Cord_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                list(pm2_Cord_PREDO_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth", "Delivery_Mode_dichotomaided", "inducedlabourYes", "Parity_dichotomgiven birth before", "Maternal_Age_18PopRegandBR", "Maternal_PrepregnancyBMI18oct28new", "maternal_hypertension_dichotomhypertension in current pregnancy", "maternal_diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_Disorders_By_ChildbirthYes", "smoking_dichotomyes"), by = nzero]
                                     ,
@@ -7503,9 +7311,7 @@ csummary_Cord_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"),
 csummary_Cord_PREDO_n
 ```
 
-
-
-```r
+``` r
 g1_Cord_PREDO_n <-
   csummary_Cord_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -7536,23 +7342,19 @@ gridExtra::grid.arrange(g1_Cord_PREDO_n, g2_Cord_PREDO_n, ncol = 1)
 g1_Cord_PREDO_n
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/Model_Cord_PREDO.png", width=2800, height=1400, res=400)
 g1_Cord_PREDO_n
 dev.off()
 ```
 
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstrapModels_Cord_PREDO.png", width=2800, height=1400, res=300)
 gridExtra::grid.arrange(g1_Cord_PREDO_n, g2_Cord_PREDO_n, ncol = 1)
 dev.off()
 ```
 
-
-
-```r
+``` r
 elbow_finder(csummary_Cord_PREDO_n$nzero, csummary_Cord_PREDO_n$median_cvm)
 
 nzero_indices_Cord <- data.frame(t(elbow_finder(csummary_Cord_PREDO_n$nzero, csummary_Cord_PREDO_n$median_cvm)))
@@ -7560,18 +7362,15 @@ colnames(nzero_indices_Cord) <- c("x", "y")
 rownames(nzero_indices_Cord) <- NULL
 ```
 
-
-```r
+``` r
 nzero_final_cord_predo <- 7
 ```
 
-
-```r
+``` r
 csummary_Cord_PREDO_n[nzero %in% nzero_final_cord_predo]
 ```
 
-
-```r
+``` r
 summary_Cord_PREDO_n_finalnzero <- csummary_Cord_PREDO_n[nzero %in% nzero_final_cord_predo]
 sig_var_names_Cord_PREDO_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Cord_PREDO_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Cord_PREDO_n_finalnzero) <- c("non-zero", "child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -7584,8 +7383,7 @@ summary_Cord_PREDO_n_finalnzeroT <- summary_Cord_PREDO_n_finalnzeroT[order(summa
 summary_Cord_PREDO_n_finalnzeroT$number <- seq(1, length(summary_Cord_PREDO_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Cord_PREDO_n <- 
   ggplot(summary_Cord_PREDO_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -7604,8 +7402,7 @@ perc_vars_Cord_PREDO_n
 Filter(function(x) any(x > 0.75), summary_Cord_PREDO_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-```r
+``` r
 pm2_Cord_PREDO_n_coef <-
   dcast(pm2_Cord_PREDO_n[,
                                 as.list(unlist(
@@ -7631,13 +7428,11 @@ pm2_Cord_PREDO_n_coef <-
 pm2_Cord_PREDO_n_coef$variable <- factor(pm2_Cord_PREDO_n_coef$variabl, levels=unique(pm2_Cord_PREDO_n_coef$variable))
 ```
 
-
-```r
+``` r
 write_xlsx(pm2_Cord_PREDO_n_coef,"Results/Tables/Coefficients_Cord_PREDO.xlsx")
 ```
 
-
-```r
+``` r
 coef_Cord_PREDO_n <- 
   ggplot(pm2_Cord_PREDO_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -7657,16 +7452,13 @@ coef_Cord_PREDO_n <-
 coef_Cord_PREDO_n
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/coef_Cord_PREDO.png",  width=2800, height=1400, res=400)
 coef_Cord_PREDO_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 p1 <-
   csummary_Cord_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -7710,57 +7502,62 @@ dev.off()
 
 [to the top](#top)
 
-## elastic net PREDO 450K Cord blood {#elasticnetCordPREDO450}  
+## elastic net PREDO 450K Cord blood
+
 main model, without alcohol
 
-
-```r
+``` r
 load("InputData/ClockCalculationsInput/Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n.Rdata")
 ```
 
-
-
-```r
+``` r
 yrc_mat_PREDO_Cord450_n <- matrix(Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n$EAAR_Bohlin)
 xrc_mat_PREDO_Cord450_n <- model.matrix( ~ . - EAAR_Bohlin, data = Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n)[, -1]
 yrc_mat_PREDO_scaled_Cord450_n <- scale(yrc_mat_PREDO_Cord450_n)
 xrc_mat_PREDO_scaled_Cord450_n <- scale(xrc_mat_PREDO_Cord450_n)
 ```
 
-
 <!-- set seed -->
+
 <!-- ```{r} -->
+
 <!-- set.seed(2020) -->
+
 <!-- ``` -->
 
-
 <!-- ```{r, warning=F} -->
+
 <!--   nboot = 1000 -->
 
 <!--   start_time <- Sys.time() -->
+
 <!--   bootstraps_Cord450_PREDO_n <- replicate(nboot, { -->
+
 <!--     rws <- sample(1:nrow(xrc_mat_PREDO_scaled_Cord450_n), replace = TRUE) -->
+
 <!--     ensr(xrc_mat_PREDO_scaled_Cord450_n[rws, ], yrc_mat_PREDO_scaled_Cord450_n[rws, ], standardized = FALSE, family="gaussian", nlambda=100, nfolds=10, alpha=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)) -->
+
 <!--   }, -->
+
 <!--   simplify = FALSE) -->
 
 <!--   end_time <- Sys.time() -->
+
 <!--   end_time - start_time -->
 
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- save(bootstraps_Cord450_PREDO_n, file="InputData/Data_ElasticNets/bootstraps_Cord450_PREDO_n_1000.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/bootstraps_Cord450_PREDO_n_1000.Rdata")
 ```
 
-
-```r
+``` r
 summaries_Cord450_PREDO_n <-
   bootstraps_Cord450_PREDO_n %>%
   lapply(summary) %>%
@@ -7769,8 +7566,7 @@ summaries_Cord450_PREDO_n <-
 summaries_Cord450_PREDO_n
 ```
 
-
-```r
+``` r
 summaries_Cord450_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
   ggplot2::aes(x = nzero, y = cvm, group = bootstrap) +
@@ -7781,9 +7577,7 @@ summaries_Cord450_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] 
   ggplot2::theme_bw()
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstraps_Cord450.png", width=2200, height=1400, res=300)
 summaries_Cord450_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] %>%
   ggplot2::ggplot(data = .) +
@@ -7796,39 +7590,46 @@ summaries_Cord450_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] 
 dev.off()
 ```
 
-
-
 <!-- ```{r, warning=FALSE} -->
+
 <!-- # lowest cvm by bootstrap and nzero -->
+
 <!-- pm_Cord450_PREDO_n <- summaries_Cord450_PREDO_n[, .SD[cvm == min(cvm)], by = c("bootstrap", "nzero")] -->
+
 <!-- pm2_Cord450_PREDO_n <- NULL -->
 
 <!-- for(i in as.integer(seq(1, nrow(pm_Cord450_PREDO_n), by = 1))) { -->
+
 <!--   pm2_Cord450_PREDO_n <- rbind(pm2_Cord450_PREDO_n, -->
+
 <!--                cbind(pm_Cord450_PREDO_n[i, ], -->
+
 <!--                t(as.matrix(coef(bootstraps_Cord450_PREDO_n[[pm_Cord450_PREDO_n[i, bootstrap]]][[pm_Cord450_PREDO_n[i, l_index]]], s = pm_Cord450_PREDO_n[i, lambda]))) -->
+
 <!--                ) -->
+
 <!--   ) -->
+
 <!-- } -->
 
 <!-- pm2_Cord450_PREDO_n -->
-<!-- ``` -->
 
+<!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- # save "preferable models" -->
+
 <!-- save(pm2_Cord450_PREDO_n, file="InputData/Data_ElasticNets/pm2_Cord450_PREDO_n.Rdata") -->
+
 <!-- ``` -->
 
-
-
-```r
+``` r
 load("InputData/Data_ElasticNets/pm2_Cord450_PREDO_n.Rdata")
 # coefficient values for the models with smallest cvm by number of non-erzo coefficients and bootstrap
 ```
 
-
-```r
+``` r
 csummary_Cord450_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero"), 
                                list(pm2_Cord450_PREDO_n[, lapply(.SD, function(x) {mean(x != 0)}), .SDcols = c("Child_Sexfemale", "Birth_Weight", "Birth_Length", "Head_Circumference_at_Birth", "Delivery_Mode_dichotomaided", "inducedlabourYes", "Parity_dichotomgiven birth before", "Maternal_Age_18PopRegandBR", "Maternal_PrepregnancyBMI18oct28new", "maternal_hypertension_dichotomhypertension in current pregnancy", "maternal_diabetes_dichotomdiabetes in current pregnancy", "Maternal_Mental_Disorders_By_ChildbirthYes", "smoking_dichotomyes"), by = nzero]
                                     ,
@@ -7839,9 +7640,7 @@ csummary_Cord450_PREDO_n <- Reduce(function(x,y) merge(x = x, y = y, by = "nzero
 csummary_Cord450_PREDO_n
 ```
 
-
-
-```r
+``` r
 g1_Cord450_PREDO_n <-
   csummary_Cord450_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -7872,22 +7671,19 @@ gridExtra::grid.arrange(g1_Cord450_PREDO_n, g2_Cord450_PREDO_n, ncol = 1)
 g1_Cord450_PREDO_n
 ```
 
-
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/Model_Cord450_PREDO.png", width=2800, height=1400, res=400)
 g1_Cord450_PREDO_n
 dev.off()
 ```
 
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/bootstrapModels_Cord450_PREDO.png", width=2800, height=1400, res=300)
 gridExtra::grid.arrange(g1_Cord450_PREDO_n, g2_Cord450_PREDO_n, ncol = 1)
 dev.off()
 ```
 
-
-```r
+``` r
 elbow_finder(csummary_Cord450_PREDO_n$nzero, csummary_Cord450_PREDO_n$median_cvm)
 
 nzero_indices_Cord450 <- data.frame(t(elbow_finder(csummary_Cord450_PREDO_n$nzero, csummary_Cord450_PREDO_n$median_cvm)))
@@ -7895,18 +7691,15 @@ colnames(nzero_indices_Cord450) <- c("x", "y")
 rownames(nzero_indices_Cord450) <- NULL
 ```
 
-
-```r
+``` r
 nzero_final_Cord450_predo <- 6
 ```
 
-
-```r
+``` r
 csummary_Cord450_PREDO_n[nzero %in% nzero_final_Cord450_predo]
 ```
 
-
-```r
+``` r
 summary_Cord450_PREDO_n_finalnzero <- csummary_Cord450_PREDO_n[nzero %in% nzero_final_Cord450_predo]
 sig_var_names_Cord450_PREDO_n_finalnzero <- Filter(function(x) any(x > 0.75), summary_Cord450_PREDO_n_finalnzero[,!c("nzero", "mean_cvm", "median_cvm")]) %>% colnames()
 colnames(summary_Cord450_PREDO_n_finalnzero) <- c("non-zero", "child sex (female)", "birth weight", "birth length", "head circumference", "delivery mode (aided)", "induced labor (yes)", "parity (birth before)", "maternal age", "maternal BMI", "maternal hypertension (yes)", "maternal diabetes (yes)", "maternal mental disorders (yes)", "maternal smoking (yes)", "mean cvm", "median cvm")
@@ -7919,8 +7712,7 @@ summary_Cord450_PREDO_n_finalnzeroT <- summary_Cord450_PREDO_n_finalnzeroT[order
 summary_Cord450_PREDO_n_finalnzeroT$number <- seq(1, length(summary_Cord450_PREDO_n_finalnzeroT$variable))
 ```
 
-
-```r
+``` r
 perc_vars_Cord450_PREDO_n <- 
   ggplot(summary_Cord450_PREDO_n_finalnzeroT, aes(reorder(variable, percent), percent, group=1))+
   geom_point()+ geom_line()+
@@ -7939,9 +7731,7 @@ perc_vars_Cord450_PREDO_n
 Filter(function(x) any(x > 0.75), summary_Cord450_PREDO_n_finalnzero[,!c("non-zero", "mean cvm", "median cvm")])
 ```
 
-
-
-```r
+``` r
 pm2_Cord450_PREDO_n_coef <-
   dcast(pm2_Cord450_PREDO_n[,
                                 as.list(unlist(
@@ -7967,13 +7757,11 @@ pm2_Cord450_PREDO_n_coef <-
 pm2_Cord450_PREDO_n_coef$variable <- factor(pm2_Cord450_PREDO_n_coef$variabl, levels=unique(pm2_Cord450_PREDO_n_coef$variable))
 ```
 
-
-```r
+``` r
 write_xlsx(pm2_Cord450_PREDO_n_coef,"Results/Tables/Coefficients_Cord450_PREDO.xlsx")
 ```
 
-
-```r
+``` r
 coef_Cord450_PREDO_n <- 
   ggplot(pm2_Cord450_PREDO_n_coef, aes(y = variable, x=median))+
   geom_point(mapping = ggplot2::aes(y = variable, size =non_zero, alpha = non_zero, color = non_zero))+
@@ -7993,16 +7781,13 @@ coef_Cord450_PREDO_n <-
 coef_Cord450_PREDO_n
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/elasticNet_singleTissues/Outcome_main/coef_Cord450_PREDO.png",  width=2800, height=1400, res=400)
 coef_Cord450_PREDO_n
 dev.off()
 ```
 
-
-
-```r
+``` r
 p1 <-
   csummary_Cord450_PREDO_n %>%
   melt(id.vars = c("nzero", "mean_cvm", "median_cvm")) %>%
@@ -8044,18 +7829,17 @@ grid.draw(g)
 dev.off()
 ```
 
-
-```r
+``` r
 rm(list = setdiff(ls(), lsf.str()))
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
 # Cross-Tissues
 
-## Correlations DNAmGA {#corTissuesDNAmGA}  
+## Correlations DNAmGA
 
-```r
+``` r
 load(file= "InputData/ClockCalculationsInput/Data_CVS_ITU.Rdata")
 load(file= "InputData/ClockCalculationsInput/Data_Cord_ITU.Rdata")
 load(file= "InputData/ClockCalculationsInput/Data_Placenta_ITU.Rdata")
@@ -8080,26 +7864,24 @@ load(file="InputData/ClockCalculationsInput/Data_PREDO_Placenta_female.Rdata")
 
 *Cord blood & Placenta (in ITU)*
 
-```r
+``` r
 DNAmGAs_birth <- Data_Cord_Placenta_ITU[ ,c("DNAmGA_Bohlin","DNAmGA_Lee", "Gestational_Age_Weeks")]
 colnames(DNAmGAs_birth) <- c("Cordblood", "Placenta", "GA_birth")
 ```
 
-
-```r
+``` r
 BirthcorrDNAmGAs <- rcorr(as.matrix(DNAmGAs_birth))
 BirthcorrDNAmGAs
 ```
 
 adjusting for GA at birth
 
-```r
+``` r
 # partial correlation
 pcor.test(x=DNAmGAs_birth$Cordblood, y=DNAmGAs_birth$Placenta, z=DNAmGAs_birth$GA_birth)
 ```
 
-
-```r
+``` r
 cor_cord_placenta_dnamga <-ggscatter(Data_Cord_Placenta_ITU, x = "DNAmGA_Bohlin", y = "DNAmGA_Lee", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -8112,36 +7894,30 @@ cor_cord_placenta_dnamga <-ggscatter(Data_Cord_Placenta_ITU, x = "DNAmGA_Bohlin"
  scale_x_continuous(limits = c(32,44), breaks = seq(32,44, by=2))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/diffTissues/DNAmGA_Cord_Placenta_ITU.png", width= 2600, height=1600, res=500)
 cor_cord_placenta_dnamga
 dev.off()
 ```
 
-
 *Cord blood and Placenta (in PREDO)*
 
-```r
+``` r
 DNAmGAsPREDO <- Data_PREDO_EPIC_Cord_Placenta[ ,c("DNAmGA_Bohlin","DNAmGA_Lee", "Gestational_Age")]
 colnames(DNAmGAsPREDO) <- c("Cordblood", "Placenta", "GA_birth")
 ```
 
-
-```r
+``` r
 allcorrsDNAmGAsPREDO <- rcorr(as.matrix(DNAmGAsPREDO))
 allcorrsDNAmGAsPREDO
 ```
 
-
-```r
+``` r
 # partial correlation
 pcor.test(x=DNAmGAsPREDO$Cord, y=DNAmGAsPREDO$Placenta, z=DNAmGAsPREDO[,c("GA_birth")])
 ```
 
-
-
-```r
+``` r
 cor_cord_placenta_dnamga_predo <-ggscatter(Data_PREDO_EPIC_Cord_Placenta, x = "DNAmGA_Bohlin", y = "DNAmGA_Lee", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -8154,36 +7930,30 @@ cor_cord_placenta_dnamga_predo <-ggscatter(Data_PREDO_EPIC_Cord_Placenta, x = "D
  scale_x_continuous(limits = c(34,42), breaks = seq(34,42, by=2))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/diffTissues/DNAmGA_Cord_Placenta_PREDO.png", width= 2600, height=1600, res=500)
 cor_cord_placenta_dnamga_predo
 dev.off()
 ```
 
-
 *CVS and Placenta*
 
-
-```r
+``` r
 DNAmGAs_CP <- Data_CVS_Placenta_ITU[ ,c("DNAmGA_Lee_CVS","DNAmGA_Lee_Placenta", "gestage_at_CVS_weeks", "Gestational_Age_Weeks")]
 colnames(DNAmGAs_CP) <- c("CVS", "Placenta", "GA_CVS", "GA_Birth")
 ```
 
-
-```r
+``` r
 CPcorrDNAmGAs <- rcorr(as.matrix(DNAmGAs_CP))
 CPcorrDNAmGAs
 ```
 
-
-```r
+``` r
 # partial correlation
 pcor.test(x=DNAmGAs_CP$CVS, y=DNAmGAs_CP$Placenta, z=DNAmGAs_CP[,c("GA_CVS","GA_Birth")])
 ```
 
-
-```r
+``` r
 cor_cvs_placenta_dnamga <-ggscatter(Data_CVS_Placenta_ITU, x = "DNAmGA_Lee_CVS", y = "DNAmGA_Lee_Placenta", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -8196,35 +7966,30 @@ cor_cvs_placenta_dnamga <-ggscatter(Data_CVS_Placenta_ITU, x = "DNAmGA_Lee_CVS",
  scale_x_continuous(limits = c(6,14), breaks = seq(6,14, by=2))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/diffTissues/DNAmGA_CVS_Placenta.png", width= 2600, height=1600, res=500)
 cor_cvs_placenta_dnamga
 dev.off()
 ```
 
-
 *CVS and Cord blood*
 
-```r
+``` r
 DNAmGAs_CC <- Data_CVS_Cord_ITU[ ,c("DNAmGA_Lee","DNAmGA_Bohlin", "gestage_at_CVS_weeks", "Gestational_Age_Weeks")]
 colnames(DNAmGAs_CC) <- c("CVS", "Cord blood", "GA_CVS", "GA_Birth")
 ```
 
-
-```r
+``` r
 CCcorrDNAmGAs <- rcorr(as.matrix(DNAmGAs_CC))
 CCcorrDNAmGAs
 ```
 
-
-```r
+``` r
 # partial correlation
 pcor.test(x=DNAmGAs_CC$CVS, y=DNAmGAs_CC$Cord, z=DNAmGAs_CC[,c("GA_CVS","GA_Birth")])
 ```
 
-
-```r
+``` r
 cor_cvs_cord_dnamga <- ggscatter(Data_CVS_Cord_ITU, x = "DNAmGA_Lee", y = "DNAmGA_Bohlin", 
           add = "reg.line", conf.int = TRUE, 
          # cor.coef = TRUE, cor.method = "pearson",
@@ -8237,35 +8002,29 @@ cor_cvs_cord_dnamga <- ggscatter(Data_CVS_Cord_ITU, x = "DNAmGA_Lee", y = "DNAmG
  scale_x_continuous(limits = c(6,14), breaks = seq(6,14, by=2))
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/diffTissues/DNAmGA_CVS_Cord.png", width= 2600, height=1600, res=500)
 cor_cvs_cord_dnamga
 dev.off()
 ```
 
+[to the top](#top)
 
-[to the top](#top)  
+## Correspondence EAAR
 
-## Correspondence EAAR {#corTissuesEAAR}  
+Fig. 4 *Cord blood & Placenta (in ITU)*
 
-Fig. 4
-*Cord blood & Placenta (in ITU)*
-
-```r
+``` r
 DNAmGAResidsCBirth <- Data_Cord_Placenta_ITU[ ,c("EAAR_Bohlin","EAAR_Lee")]
 colnames(DNAmGAResidsCBirth) <- c("Cordblood", "Placenta")
 ```
 
-
-```r
+``` r
 allcorrsDNAmGAResidCBirth <- rcorr(as.matrix(DNAmGAResidsCBirth))
 allcorrsDNAmGAResidCBirth
 ```
 
-
-
-```r
+``` r
 cor_cord_placenta_resid <- ggscatter(Data_Cord_Placenta_ITU, x = "EAAR_Bohlin", y = "EAAR_Lee", 
           add = "reg.line", conf.int = TRUE, 
           xlab = "EAAR Cord blood", ylab = "EAAR fetal Placenta")+
@@ -8330,8 +8089,7 @@ leveneTest(value ~ variable, resid_cordplacenta_itu_ls, center=mean)
 #      724
 ```
 
-
-```r
+``` r
 # paired t-test
 d <- with(resid_cordplacenta_itu_ls, 
         value[variable == "Cord blood"] - value[variable == "Placenta"])
@@ -8352,20 +8110,17 @@ write.csv(tidy_t_paired_itu_resid, "Results/Tables/t_paired_eaar_itu_cordplacent
 
 *Cord blood and Placenta (in PREDO)*
 
-```r
+``` r
 DNAmGAResidCPREDO <- Data_PREDO_EPIC_Cord_Placenta[ ,c("EAAR_Bohlin","EAAR_Lee")]
 colnames(DNAmGAResidCPREDO) <- c("Cordblood", "Placenta")
 ```
 
-
-```r
+``` r
 allcorrsDNAmGAResidCPREDO <- rcorr(as.matrix(DNAmGAResidCPREDO))
 allcorrsDNAmGAResidCPREDO
 ```
 
-
-
-```r
+``` r
 cor_cord_placenta_resid_predo <- ggscatter(Data_PREDO_EPIC_Cord_Placenta, x = "EAAR_Bohlin", y = "EAAR_Lee", 
           add = "reg.line", conf.int = TRUE, 
           xlab = "EAAR Cord blood", ylab = "EAAR decidual Placenta")+
@@ -8424,8 +8179,7 @@ leveneTest(value ~ variable, resid_cordplacenta_predo_ls, center=mean)
 # significant
 ```
 
-
-```r
+``` r
 # paired t-test
 d <- with(resid_cordplacenta_predo_ls, 
         value[variable == "Cord blood"] - value[variable == "Placenta"])
@@ -8443,23 +8197,19 @@ ddply(resid_cordplacenta_predo_ls, .(variable), colwise(mean))
 ddply(resid_cordplacenta_predo_ls, .(variable), colwise(sd))
 ```
 
-
 *CVS and Placenta*
 
-```r
+``` r
 DNAmGAResidCCP <- Data_CVS_Placenta_ITU[ ,c("EAAR_Lee_CVS", "EAAR_Lee_Placenta")]
 colnames(DNAmGAResidCCP) <- c("CVS", "Placenta")
 ```
 
-
-```r
+``` r
 allcorrsDNAmGAResidCCP <- rcorr(as.matrix(DNAmGAResidCCP))
 allcorrsDNAmGAResidCCP
 ```
 
-
-
-```r
+``` r
 cor_cvs_placenta_resid <- ggscatter(Data_CVS_Placenta_ITU, x = "EAAR_Lee_CVS", y = "EAAR_Lee_Placenta", 
           add = "reg.line", conf.int = TRUE, xlab = "EAAR CVS", ylab = "EAAR fetal Placenta")+
          theme(text = element_text(size=13), axis.text.x = element_text(size=13))+
@@ -8517,8 +8267,7 @@ leveneTest(value ~ variable, resid_cvsplacenta_itu_ls, center=mean)
 # not significant
 ```
 
-
-```r
+``` r
 # paired t-test
 d <- with(resid_cvsplacenta_itu_ls, 
         value[variable == "CVS"] - value[variable == "Placenta"])
@@ -8539,19 +8288,17 @@ ddply(resid_cvsplacenta_itu_ls, .(variable), colwise(sd))
 
 *CVS and Cord blood*
 
-```r
+``` r
 DNAmGAResidCC <- Data_CVS_Cord_ITU[ ,c("EAAR_Lee", "EAAR_Bohlin")]
 colnames(DNAmGAResidCC) <- c("CVS", "Cord")
 ```
 
-
-```r
+``` r
 allcorrsDNAmGAResidCC <- rcorr(as.matrix(DNAmGAResidCC))
 allcorrsDNAmGAResidCC
 ```
 
-
-```r
+``` r
 cor_cvs_cord_resid <- ggscatter(Data_CVS_Cord_ITU, x = "EAAR_Lee", y = "EAAR_Bohlin", 
           add = "reg.line", conf.int = TRUE, xlab = "EAAR CVS", ylab = "EAAR Cord blood")+
           stat_cor(method = "pearson", label.x = -2, label.y = 2, r.digits = 2, p.digits = 2)+
@@ -8613,8 +8360,7 @@ leveneTest(value ~ variable, resid_cvscord_itu_ls, center=mean)
 #       130   
 ```
 
-
-```r
+``` r
 # paired t-test
 d <- with(resid_cvscord_itu_ls, 
         value[variable == "CVS"] - value[variable == "Cord blood"])
@@ -8638,35 +8384,30 @@ ddply(resid_cvscord_itu_ls, .(variable), colwise(mean))
 ddply(resid_cvscord_itu_ls, .(variable), colwise(sd))
 ```
 
-
-```r
+``` r
 png(filename="Results/Figures/diffTissues/EAAR_correlations_tissues.png", width=3000, height=2000, res=300)
 gridExtra::grid.arrange(cor_cvs_placenta_resid, cor_cvs_cord_resid, cor_cord_placenta_resid, cor_cord_placenta_resid_predo, ncol = 2)
 dev.off()
 ```
 
-[to the top](#top) 
+[to the top](#top)
 
-## Difference in EAAR between Tissues {#DifferenceEAARTissues}  
+## Difference in EAAR between Tissues
 
 *individuals with data from cordblood + placenta -ITU *
 
-```r
+``` r
 # difference between cordblood and placenta
 Data_Cord_Placenta_ITU$differenceEAAR <- Data_Cord_Placenta_ITU$EAAR_Bohlin - Data_Cord_Placenta_ITU$EAAR_Lee
 #n=390
 ```
 
-
-
-```r
+``` r
 # What is the absolute difference between cordblood and placenta?
 Data_Cord_Placenta_ITU$absdifferenceEAAR <- abs(Data_Cord_Placenta_ITU$EAAR_Bohlin - Data_Cord_Placenta_ITU$EAAR_Lee)
 ```
 
-
-
-```r
+``` r
 box_abs_resid_ITU <- ggplot(Data_Cord_Placenta_ITU, aes(x =Child_Sex, y = absdifferenceEAAR)) +
   geom_boxplot() +
   labs(x="child sex", y="absolute difference between EAARs", title="ITU")
@@ -8705,25 +8446,31 @@ hists_resid_ITU
 
 *individuals with data from cord blood and placenta - PREDO*
 
-```r
+``` r
 # difference between cordblood and placenta
 Data_PREDO_EPIC_Cord_Placenta$differenceEAAR <- Data_PREDO_EPIC_Cord_Placenta$EAAR_Bohlin - Data_PREDO_EPIC_Cord_Placenta$EAAR_Lee
 ```
+
 <div class="alert alert-info">
-* variable differenceresidualGAC = residual GA for cordblood minus residual GA for placenta (residual from DNAmGA~GA)    
+
+  - variable differenceresidualGAC = residual GA for cordblood minus
+    residual GA for placenta (residual from DNAmGA\~GA)  
+
 </div>
 
-
-```r
+``` r
 # What is the absolute difference between cordblood and placenta?
 Data_PREDO_EPIC_Cord_Placenta$absdifferenceEAAR <- abs(Data_PREDO_EPIC_Cord_Placenta$EAAR_Bohlin - Data_PREDO_EPIC_Cord_Placenta$EAAR_Lee)
 ```
+
 <div class="alert alert-info">
-* variable absdifferenceresidualGAC = absolute difference between residual GA for cordblood vs placenta
+
+  - variable absdifferenceresidualGAC = absolute difference between
+    residual GA for cordblood vs placenta
+
 </div>
 
-
-```r
+``` r
 box_abs_resid_PREDO <- ggplot(Data_PREDO_EPIC_Cord_Placenta, aes(x =Child_Sex, y = absdifferenceEAAR)) +
   geom_boxplot() +
   labs(x="child sex", y="absolute difference between EAARs", title="PREDO")
@@ -8752,23 +8499,20 @@ hists_resid_PREDO <- ggplot(Data_PREDO_EPIC_Cord_Placenta, aes(x=differenceEAAR)
 hists_resid_PREDO
 ```
 
+*individuals with data from cvs + cordblood*
 
-*individuals with data from cvs + cordblood*  
-
-```r
+``` r
 # difference between cvs and cordblood 
 Data_CVS_Cord_ITU$differenceEAAR <- Data_CVS_Cord_ITU$EAAR_Lee - Data_CVS_Cord_ITU$EAAR_Bohlin
 #n=73
 ```
 
-
-```r
+``` r
 # What is the absolute difference between cordblood and placenta?
 Data_CVS_Cord_ITU$absdifferenceEAAR <- abs(Data_CVS_Cord_ITU$EAAR_Lee - Data_CVS_Cord_ITU$EAAR_Bohlin)
 ```
 
-
-```r
+``` r
 box_abs_resid_ITU_cc <- ggplot(Data_CVS_Cord_ITU, aes(x =Child_Sex, y = absdifferenceEAAR)) +
   geom_boxplot() +
   labs(x="child sex", y="absolute difference between EAARs", title="ITU")
@@ -8806,22 +8550,20 @@ box_EAAR_cvscord_ITU
 hists_resid_ITU_cc
 ```
 
-*individuals with data from cvs + placenta*  
+*individuals with data from cvs + placenta*
 
-```r
+``` r
 # difference between cvs and placenta 
 Data_CVS_Placenta_ITU$differenceEAAR <- Data_CVS_Placenta_ITU$EAAR_Lee_CVS - Data_CVS_Placenta_ITU$EAAR_Lee_Placenta
 #n=86
 ```
 
-
-```r
+``` r
 # What is the absolute difference between cordblood and placenta?
 Data_CVS_Placenta_ITU$absdifferenceEAAR <- abs(Data_CVS_Placenta_ITU$EAAR_Lee_CVS - Data_CVS_Placenta_ITU$EAAR_Lee_Placenta)
 ```
 
-
-```r
+``` r
 box_abs_resid_ITU_cp <- ggplot(Data_CVS_Placenta_ITU, aes(x =Child_Sex, y = absdifferenceEAAR)) +
   geom_boxplot() +
   labs(x="child sex", y="absolute difference between EAARs", title="ITU")
@@ -8862,8 +8604,7 @@ hists_resid_ITU_cp
 
 *individuals with data from cvs + cordblood + placenta*
 
-
-```r
+``` r
 resid_Data_Full_ITU <- na.omit(Data_Full_ITU[ ,c("Sample_Name", "EAAR_Bohlin", "EAAR_Lee_CVS", "EAAR_Lee_Placenta")]) #60
 resid_Data_Full_ITU_z <- resid_Data_Full_ITU[ ,c("Sample_Name", "EAAR_Bohlin", "EAAR_Lee_CVS", "EAAR_Lee_Placenta")]
 
@@ -8882,20 +8623,17 @@ resid_Data_Full_ITU_z$EAAR_Lee_CVS <- NULL
 resid_Data_Full_ITU_z$EAAR_Lee_Placenta <- NULL
 ```
 
-
-```r
+``` r
 long_resid_Data_Full_ITU_z <- melt(as.data.table(resid_Data_Full_ITU_z), id.vars = "Sample_Name", variable.name = "sampling")
 long_resid_Data_Full_ITU_z$sampling <- factor(long_resid_Data_Full_ITU_z$sampling, levels = c("CVS", "Placenta (fetal)", "Cord blood"))
 ```
 
-
-```r
+``` r
 long_resid_Data_Full_ITU <- melt(as.data.table(resid_Data_Full_ITU), id.vars = "Sample_Name", variable.name = "sampling")
 long_resid_Data_Full_ITU$sampling <- factor(long_resid_Data_Full_ITU$sampling, levels = c("CVS", "Placenta (fetal)", "Cord blood"))
 ```
 
-
-```r
+``` r
 library(randomcoloR)
 n <- 60
 palette <- distinctColorPalette(n)
@@ -8903,7 +8641,7 @@ palette <- distinctColorPalette(n)
 
 *Plots*
 
-```r
+``` r
 ggplot(long_resid_Data_Full_ITU_z, aes(x=sampling, y=value, group=as.factor(Sample_Name), color=as.factor(Sample_Name))) + 
   geom_point()+
   geom_line()+
@@ -8914,8 +8652,7 @@ ggplot(long_resid_Data_Full_ITU_z, aes(x=sampling, y=value, group=as.factor(Samp
   labs(x="", y = "z-standardized EAAR")
 ```
 
-
-```r
+``` r
 ggplot(long_resid_Data_Full_ITU, aes(x=sampling, y=value, group=as.factor(Sample_Name), color=as.factor(Sample_Name))) + 
   geom_point()+
   geom_line()+
@@ -8926,8 +8663,7 @@ ggplot(long_resid_Data_Full_ITU, aes(x=sampling, y=value, group=as.factor(Sample
   labs(x="", y = "EAAR (n = 60)")
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/diffTissues/EAAR_CVSCordPlacenta_ITU.png", width=3000, height=1500, res=400)
 ggplot(long_resid_Data_Full_ITU, aes(x=sampling, y=value, group=as.factor(Sample_Name), color=as.factor(Sample_Name))) + 
   geom_point()+
@@ -8940,8 +8676,7 @@ ggplot(long_resid_Data_Full_ITU, aes(x=sampling, y=value, group=as.factor(Sample
 dev.off()
 ```
 
-
-```r
+``` r
 png(file="Results/Figures/diffTissues/EAAR_PlacentaCord_ITU.png", width=2500, height=1500, res=400)
 hists_abs_resid_ITU
 dev.off()
@@ -8971,5 +8706,4 @@ hists_resid_ITU_cp
 dev.off()
 ```
 
-[to the top](#top)  
-
+[to the top](#top)
