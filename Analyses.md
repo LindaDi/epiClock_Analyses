@@ -10,68 +10,80 @@ March 2021
 -----
 
 **General**  
-[start with loading packages & functions](#loadpacks)  
-[loading data & Sample Overview](#loadData)
+[start with loading packages and
+functions](#start-with-loading-packages-and-functions)  
+[loading data and Sample Overview](#loading-data-and-sample-overview)
 
 Prepare data for elastic net models:  
-[CVS: data preparation for models](#dataprepCVSITU)  
-[Cord blood: data preparation](#dataprepCordITU)  
-[Placenta: data preparation](#dataprepPlacentaITU)  
-[Cord blood EPIC: data preparation](#dataprepCordPREDO)  
-[Cord blood 450K: data preparation](#dataprepCord450KPREDO)  
-[Placenta: data preparation](#dataprepPlacentaPREDO)
+[CVS data preparation](#cvs-data-preparation)  
+[Cord blood data preparation](#cord-blood-data-preparation)  
+[Placenta data preparation](#placenta-data-preparation)  
+[Cord blood EPIC data preparation](#cord-blood-epic-data-preparation)  
+[Cord blood 450K data preparation](#cord-blood-450k-data-preparation)  
+[Placenta data preparation](#placenta-data-preparation)
 
-[SampleVisualization](#Samples)
+[SampleVisualization](#samplevisualization)
 
 **Basics & Descriptive Statistics:**  
-[ITU](#ITUDescriptive)  
-[PREDO](#PREDODescriptive)
+[ITU](#itu)  
+[PREDO](#predo)
 
-[comparison PREDO & ITU in predictors](#predictorsITUPREDO)
+[comparison PREDO and ITU in
+predictors](#comparison-predo-and-itu-in-predictors)
 
-[ITU: look at predictors (& correlations), in full data (all
-persons)](#PredictorsITUAll)  
-[PREDO: look at predictors (& correlations), in full data (all
-persons)](#PredictorsPREDOAll)
+[ITU look at predictors in full data (all
+persons)](#itu-look-at-predictors-in-full-data-\(all-persons\))  
+[PREDO look at predictors in full data (all
+persons)](#predo-look-at-predictors-in-full-data-\(all-persons\))
 
-[ITU: correlation DNAmGA & GA for clocks](#corDNAmGAGAITU)  
-[PREDO: correlation DNAmGA & GA for clocks](#corDNAmGAGAPREDO)  
-[Plots correlation DNAmGA & GA](#PlotcorDNAmGAGA)
+[ITU correlation DNAmGA and GA for
+clocks](#itu-correlation-dnamga-and-ga-for-clocks)  
+[PREDO correlation DNAmGA and GA for
+clocks](#predo-correlation-dnamga-and-ga-for-clocks)  
+[Plots correlation DNAmGA and GA](#plots-correlation-dnamga-and-ga)
 
-[Clocks: correlation cord blood clocks](#corCordClocks)  
-[Clocks: correlation placenta clocks](#corPlacentaClocks)
+[Clocks correlation cord blood
+clocks](#clocks-correlation-cord-blood-clocks)  
+[Clocks correlation placenta
+clocks](#clocks-correlation-placenta-clocks)
 
-[ITU: Visualization EAAR](#plotsEAARITU)  
-[PREDO: Visualization EAAR](#plotsEAARPREDO)
+[ITU Visualization EAAR](#itu-visualization-eaar)  
+[PREDO Visualization EAAR](#predo-visualization-eaar)
 
 **Single Tissues Analyses**  
 *ITU*  
-[Cord blood: elastic net main](#elasticnetCVSITU)  
-[Cord blood: elastic net including maternal alcohol
-use](#elasticnetCordITU_a)  
-[CVS: elastic net main](#elasticnetCVSITU)  
-[CVS: elastic net including maternal alcohol use](#elasticnetCVSITU_a)  
-[Placenta: elastic net main](#elasticnetPlacentaITU)  
-[Placenta: elastic net including maternal alcohol
-use](#elasticnetPlacentaITU_a)  
-[Placenta: elastic net splitted by sex](#elasticnetPlacentaITU_s)  
+[Cord blood elastic net main](#cord-blood-elastic-net-main)  
+[Cord blood elastic net including maternal alcohol
+use](#cord-blood-elastic-net-including-maternal-alcohol-use)  
+[CVS elastic net main](#cvs-elastic-net-main)  
+[CVS elastic net including maternal alcohol
+use](#cvs-elastic-net-including-maternal-alcohol-use)  
+[Placenta elastic net main](#placenta-elastic-net-main)  
+[Placenta elastic net including maternal alcohol
+use](#placenta-elastic-net-including-maternal-alcohol-use)  
+[Placenta elastic net splitted by
+sex](#Placenta-elastic-net-splitted%20by-sex)  
 *PREDO*  
-[Placenta: elastic net main](#elasticnetPlacentaPREDO)  
-[Placenta: elastic net including maternal alcohol
-use](#elasticnetPlacentaPREDO_a)  
-[Placenta: elastic net splitted by sex](#elasticnetPlacentaPREDO_s)  
-[Cord blood: prediction](#predictionCordPREDO)  
-[Cord blood: elastic net main](#elasticnetCordPREDO)  
-[Cord blood: elastic net main](#elasticnetCordPREDO450)
+[Placenta elastic net main](#placenta-elastic-net-main)  
+[Placenta elastic net including maternal alcohol
+use](#placenta-elastic-net-including-maternal-alcohol-use)  
+[Placenta elastic net splitted by
+sex](#placenta-elastic-net-splitted%20by-sex)  
+[Cord blood PREDO prediction](#cord-blood-predo-prediction)  
+[Cord blood PREDO EPIC elastic net
+main](#cord-blood-predo-epic-elastic-net-main)  
+[Cord blood PREDO 450K elastic net
+main](#cord-blood-predo-450k-elastic-net-main)
 
 **Cross-Tissue Analyses**  
-[DNAmGA between tissues](#corTissuesDNAmGA)  
-[EAAR between tissues](#corTissuesEAAR)  
-[Difference in EAAR between Tissues](#DifferenceEAARTissues)
+[DNAmGA between tissues](#dnamga-between-tissues)  
+[EAAR between tissues](#eaar-between-tissues)  
+[Difference in EAAR between
+Tissues](#difference-in-eaar-between-tissues)
 
 -----
 
-# load packages
+# start with loading packages and functions
 
 <!-- ```{r} -->
 
@@ -210,7 +222,7 @@ options(scipen=999)
 writeLines(capture.output(sessionInfo()), "sessionInfo.txt")
 ```
 
-# Load saved data to start from here
+# loading data and Sample Overview
 
 Note that the working directory is the directory where the Script is
 located
@@ -326,7 +338,7 @@ estimated and chronological age.
 
 ### Data Preparation
 
-## CVS, data preparation for models
+## CVS: data preparation
 
 *regression input*
 
@@ -366,7 +378,7 @@ save(Reg_Input_Data_CVS_ITU_EAAR_wa_noNa, file="InputData/ClockCalculationsInput
 
 [to the top](#top)
 
-## Cord blood, data preparation for models
+## Cord blood: data preparation
 
 *regression input*
 
@@ -402,7 +414,7 @@ save(Reg_Input_Data_Cord_ITU_EAAR_noNa_n, file="InputData/ClockCalculationsInput
 
 [to the top](#top)
 
-## Placenta, data preparation for model
+## Placenta: data preparation
 
 *regression input*
 
@@ -480,7 +492,7 @@ save(Reg_Input_Data_Placenta_female_ITU_EAAR_noNa_n, file="InputData/ClockCalcul
 
 [to the top](#top)
 
-## cord blood data preparation for model
+## Cord blood EPIC: data preparation
 
 *EPIC*
 
@@ -516,7 +528,7 @@ save(Reg_Input_Data_Cordblood_PREDO_EAAR_noNa_n, file="InputData/ClockCalculatio
 
 [to the top](#top)
 
-## cord blood data preparation for model
+## Cord blood 450K: data preparation
 
 *450K*
 
@@ -556,7 +568,7 @@ save(Reg_Input_Data_Cordblood_PREDO450K_EAAR_noNa_n, file="InputData/ClockCalcul
 
 [to the top](#top)
 
-## placenta: data preparation for model
+## Placenta: data preparation
 
 *Placenta EPIC*
 
@@ -630,7 +642,7 @@ save(Reg_Input_Data_Placenta_female_PREDO_EAAR_noNa_n, file="InputData/ClockCalc
 
 -----
 
-# Sample visualization
+# SampleVisualization
 
 Fig. 1
 
@@ -686,7 +698,7 @@ grid::grid.text("117", x=0.23, y=0.3, gp=gpar(col="black", fontsize=10, font="Ar
 dev.off()
 ```
 
-# ITU Descriptives
+# ITU
 
 *Table 1 & 2*
 
@@ -971,7 +983,7 @@ Reg_Input_Data_Placenta_ITU_EAAR_noNa_wa %>%
 
 [to the top](#top)
 
-# PREDO Descriptives
+# PREDO
 
 ## Cord blood EPIC
 
@@ -1228,7 +1240,7 @@ ggarrange(plot_cells_cvs +
 
 [to the top](#top)
 
-# comparison PREDO & ITU in predictors
+# comparison PREDO and ITU in predictors
 
 ## placenta
 
@@ -1383,7 +1395,7 @@ table(Cordblood_Preds450K$alcohol, Cordblood_Preds450K$group)
 
 Fig. 2
 
-## ITU: look at predictors, in full data (all persons)
+## TU look at predictors in full data (all persons)
 
 ``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/predictors_cors")), dir.create(file.path(getwd(), "Results/Figures/predictors_cors")), FALSE)
@@ -1420,7 +1432,7 @@ corr.test(Input_ITU_all[6:8])
 
 [to the top](#top)
 
-## PREDO: look at predictors, in full data (all persons)
+## PREDO look at predictors in full data (all persons)
 
 ``` r
 Input_PREDO_EPIC_all <- Data_PREDO_EPIC_all[ ,!(names(Data_PREDO_EPIC_all) %in% c("Sample_Name", "PC1", "PC2"))]
@@ -1455,7 +1467,7 @@ corr.test(Input_PREDO_EPIC_all[6:8])
 
 Additional file 7, Table 2
 
-## ITU: gestational age epigenetic age correlation (separate for every tissue)
+## ITU correlation DNAmGA and GA for clocks
 
 ``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/corDNAmGAGA")), dir.create(file.path(getwd(), "Results/Figures/corDNAmGAGA")), FALSE)
@@ -1642,7 +1654,7 @@ dev.off()
 
 [to the top](#top)
 
-## PREDO: gestational age epigenetic age correlation (separate for every tissue)
+## PREDO correlation DNAmGA and GA for clocks
 
 **450K Cordblood** *Knight* with the full estimator, Knight
 
@@ -1828,7 +1840,7 @@ dev.off()
 
 [to the top](#top)
 
-### DNAmGA GA correlation plots
+### Plots correlation DNAmGA and GA
 
 for Additional File 7
 
@@ -2072,7 +2084,7 @@ dev.off()
 
 # Correlation Clocks
 
-## correlation cordblood clocks
+## Clocks correlation cord blood clocks
 
 ``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/corClocks")), dir.create(file.path(getwd(), "Results/Figures/corClocks")), FALSE)
@@ -2145,7 +2157,7 @@ dev.off()
 
 [to the top](#top)
 
-## correlation placenta clocks
+## Clocks correlation placenta clocks
 
 ``` r
 cor_placenta_clocks_itu <- ggscatter(Data_Placenta_ITU, x = "DNAmGA_Mayne", y = "DNAmGA_Lee", 
@@ -2203,7 +2215,7 @@ ggscatter(Data_CVS_ITU, x = "Gestational_Age_Weeks", y = "delta_Lee",
 
 # EAAR Descriptive
 
-## ITU: Visualization EAAR
+## ITU Visualization EAAR
 
 ``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/EAAR_descriptive")), dir.create(file.path(getwd(), "Results/Figures/EAAR_descriptive")), FALSE)
@@ -2330,7 +2342,7 @@ deltaPlacenta_boxplot
 
 [to the top](#top)
 
-## PREDO: Visualization EAAR
+## PREDO Visualization EAAR
 
 **450K Cordblood**
 
@@ -2472,7 +2484,7 @@ rm(list = setdiff(ls(), lsf.str()))
 
 **ITU**
 
-## Cord blood elastic net
+## Cord blood elastic net main
 
 main model, without alcohol variable
 
@@ -2920,7 +2932,7 @@ save(Beta_Cord_ITU_n, file="InputData/Data_ElasticNets/Beta_Cord_ITU_n.Rdata")
 
 [to the top](#top)
 
-## Cord blood elastic net
+## Cord blood elastic net including maternal alcohol use
 
 additional model, with alcohol variable
 
@@ -3322,7 +3334,7 @@ save(Beta_Cord_ITU_wa, file="InputData/Data_ElasticNets/Beta_Cord_ITU_wa.Rdata")
 
 [to the top](#top)
 
-## CVS elastic net
+## CVS elastic net main
 
 main model, without alcohol variable
 
@@ -3710,7 +3722,7 @@ dev.off()
 
 [to the top](#top)
 
-## CVS elastic net
+## CVS elastic net including maternal alcohol use
 
 additional model, with alcohol variable
 
@@ -4102,7 +4114,7 @@ grid.draw(g)
 dev.off()
 ```
 
-## Placenta elastic net
+## Placenta elastic net main
 
 main model, without alcohol variable
 
@@ -4445,7 +4457,7 @@ dev.off()
 
 [to the top](#top)
 
-## Placenta elastic net
+## Placenta elastic net including maternal alcohol use
 
 additional model, with alcohol variable
 
@@ -5499,7 +5511,7 @@ dev.off()
 
 **PREDO**
 
-## Placenta elastic net
+## Placenta elastic net main
 
 ``` r
 # in case you want to start from here
@@ -5884,7 +5896,7 @@ dev.off()
 
 [to the top](#top)
 
-## Placenta elastic net
+## Placenta elastic net including maternal alcohol use
 
 ``` r
 # in case you want to start from here
@@ -7028,7 +7040,7 @@ dev.off()
 
 [to the top](#top)
 
-## Prediction in PREDO cord blood
+## Cord blood PREDO prediction
 
 ``` r
 ifelse(!dir.exists(file.path(getwd(), "Results/Figures/predPREDO")), dir.create(file.path(getwd(), "Results/Figures/predPREDO")), FALSE)
@@ -7167,7 +7179,7 @@ ggarrange(plot_pred_real_epic, plot_pred_real_450k, nrow=1)
 dev.off()
 ```
 
-## elastic net PREDO EPIC Cord blood
+## Cord blood PREDO EPIC elastic net main
 
 main model, without alcohol
 
@@ -7502,7 +7514,7 @@ dev.off()
 
 [to the top](#top)
 
-## elastic net PREDO 450K Cord blood
+## Cord blood PREDO 450K elastic net main
 
 main model, without alcohol
 
@@ -7837,7 +7849,7 @@ rm(list = setdiff(ls(), lsf.str()))
 
 # Cross-Tissues
 
-## Correlations DNAmGA
+## DNAmGA between tissues
 
 ``` r
 load(file= "InputData/ClockCalculationsInput/Data_CVS_ITU.Rdata")
@@ -8010,7 +8022,7 @@ dev.off()
 
 [to the top](#top)
 
-## Correspondence EAAR
+## EAAR between tissues
 
 Fig. 4 *Cord blood & Placenta (in ITU)*
 
